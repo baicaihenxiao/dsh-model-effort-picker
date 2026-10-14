@@ -14,9 +14,9 @@
   本插件会读取它的 `disabledModels`（被你隐藏的模型仍然不显示），并提供它的速度档位，
   写回时走的是该插件自己用的同一个 settings 条目。
 
-| 模型菜单 | 推理滑条 |
-|---|---|
-| ![模型菜单](docs/model-menu.webp) | ![推理滑条](docs/effort-slider.webp) |
+从作曲家的模型控件直接展开的模型列表：
+
+![模型菜单](docs/model-menu.webp)
 
 ## 安装
 

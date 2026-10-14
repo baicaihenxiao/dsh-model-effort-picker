@@ -16,9 +16,9 @@ replaces the composer's model control and puts reasoning effort on a slider.
   models stay hidden) and offers its speed tiers, writing back through the same
   settings entry that plugin uses.
 
-| Model list | Effort slider |
-|---|---|
-| ![Model menu](docs/model-menu.webp) | ![Effort slider](docs/effort-slider.webp) |
+The model list, opened directly from the composer's model control:
+
+![Model menu](docs/model-menu.webp)
 
 ## Install
 
