@@ -16,9 +16,10 @@ replaces the composer's model control and puts reasoning effort on a slider.
   models stay hidden) and offers its speed tiers, writing back through the same
   settings entry that plugin uses.
 
-The model list, opened directly from the composer's model control:
+The composer: the model menu open on the provider-grouped list, and the effort
+slider — a tick and a name per level — beside the model control.
 
-![Model menu](docs/model-menu.webp)
+![Composer with the model menu open and the effort slider](docs/composer.webp)
 
 ## Install
 
