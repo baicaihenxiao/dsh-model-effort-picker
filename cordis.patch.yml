@@ -1,0 +1,6 @@
+# Takes over the composer's model seat so the model list is the menu's first
+# level instead of a flyout behind a "Select model" row, and puts the current
+# model's reasoning levels on a slider beside the model control.
+- insert:
+    - id: dsh-model-effort-picker
+      name: 'dsh-model-effort-picker'

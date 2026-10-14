@@ -1,0 +1,28 @@
+{
+  "name": "dsh-model-effort-picker",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Composer model menu that opens on the model list, plus a reasoning-effort slider.",
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./package.json": "./package.json"
+  },
+  "meta": {
+    "title": "Model & effort picker",
+    "description": "Opens the composer model list directly and puts reasoning effort on a slider beside the model control."
+  },
+  "dsh": {
+    "bundle": { "patch": "./cordis.patch.yml" },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": [
+        "@deepseek-ai/dsh-client-locale",
+        "@deepseek-ai/dsh-client-ui-conversation",
+        "@deepseek-ai/dsh-client-ui-model-selection"
+      ]
+    }
+  }
+}
