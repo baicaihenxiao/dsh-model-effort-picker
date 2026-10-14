@@ -50,6 +50,34 @@ install the DSH bundle at /absolute/path/to/dsh-model-effort-picker
 To remove it again, ask the agent to remove the bundle
 `dsh-model-effort-picker`, or disable it on DSH's Plugins page.
 
+## Updating
+
+Installing from GitHub pins the commit resolved at install time in your
+profile's `pnpm-lock.yaml`, so **a new commit upstream does not arrive by
+itself**. How you update depends on how you installed it:
+
+| Installed as | Update with |
+|---|---|
+| `github:baicaihenxiao/dsh-model-effort-picker` | `dsh plugin --profile <profile> update dsh-model-effort-picker`, or remove the bundle and install it again |
+| a local checkout | `git pull` in the checkout — the profile links the directory |
+| a tag or commit | install the revision you want: `github:baicaihenxiao/dsh-model-effort-picker#v1.0.0` |
+
+Points worth knowing:
+
+- Re-running the install with the **same** spec keeps the pinned commit;
+  `pnpm update` is what re-resolves it to the branch head.
+- `plugin_manager`'s `install_bundle` both installs the package and selects the
+  bundle. The `dsh plugin` CLI path only installs the package, so re-select the
+  bundle afterwards if you use it.
+- Reload the Web page (or restart `dsh web`) after updating.
+- Pin a release by tag — `#v1.0.0`. A branch name works too. A commit SHA must
+  be the full 40 characters: pnpm cannot resolve an abbreviated one.
+- To see what you have installed, read the version in your profile:
+
+  ```sh
+  cat ~/.dsh/profiles/<profile>/node_modules/dsh-model-effort-picker/package.json
+  ```
+
 ## Requirements
 
 - A DSH Web profile. The bundle extends `conversation.input.model` and
@@ -89,6 +117,17 @@ node check.mjs   # loads the bundle, then asserts the seats it registers
 
 Because the profile installs this directory as a symlink, edits to `client.js`
 take effect after the page reloads the module.
+
+### Releasing
+
+Bump `version` in `package.json`, add an entry to [CHANGELOG.md](CHANGELOG.md),
+then tag and publish:
+
+```sh
+git tag -a vX.Y.Z -m "vX.Y.Z"
+git push origin main --follow-tags
+gh release create vX.Y.Z --title vX.Y.Z --notes-from-tag
+```
 
 ## License
 

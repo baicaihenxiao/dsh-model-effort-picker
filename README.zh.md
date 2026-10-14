@@ -44,6 +44,31 @@ install the DSH bundle at /absolute/path/to/dsh-model-effort-picker
 
 卸载：让 agent 移除 bundle `dsh-model-effort-picker`，或在 DSH 的 Plugins 页面停用它。
 
+## 更新
+
+从 GitHub 安装会把「安装当次解析到的 commit」钉在你的 profile `pnpm-lock.yaml` 里，
+所以**上游新提交不会自动到来**。按你的安装方式选择更新办法：
+
+| 安装方式 | 更新办法 |
+|---|---|
+| `github:baicaihenxiao/dsh-model-effort-picker` | `dsh plugin --profile <profile> update dsh-model-effort-picker`，或先移除 bundle 再装一次 |
+| 本地克隆目录 | 在克隆目录里 `git pull` —— profile 链接的就是该目录 |
+| 指定 tag 或 commit | 安装你要的修订：`github:baicaihenxiao/dsh-model-effort-picker#v1.0.0` |
+
+需要知道的几点：
+
+- 用**同一个** spec 再装一次不会移动钉住的 commit；真正重新解析的是 `pnpm update`。
+- `plugin_manager` 的 `install_bundle` 会「装包 + 选中 bundle」两件事一起做；而 `dsh plugin`
+  这条 CLI 通道只装包，用完之后需要重新选中 bundle。
+- 更新后刷新 Web 页面（或重启 `dsh web`）。
+- 用 tag 固定版本：`#v1.0.0`；分支名也可以。若用 commit SHA，必须是完整 40 位 ——
+  pnpm 无法解析缩写 SHA。
+- 查看已装版本：
+
+  ```sh
+  cat ~/.dsh/profiles/<profile>/node_modules/dsh-model-effort-picker/package.json
+  ```
+
 ## 依赖要求
 
 - 一个 DSH Web profile。本插件扩展 `conversation.input.model` 与
@@ -73,6 +98,16 @@ node check.mjs   # 加载插件包，并断言它注册的座位
 ```
 
 profile 以软链方式安装本目录，因此改动 `client.js` 后，页面重新加载模块即可生效。
+
+### 发布
+
+改 `package.json` 里的 `version`，在 [CHANGELOG.md](CHANGELOG.md) 记一条，然后打 tag 并发布：
+
+```sh
+git tag -a vX.Y.Z -m "vX.Y.Z"
+git push origin main --follow-tags
+gh release create vX.Y.Z --title vX.Y.Z --notes-from-tag
+```
 
 ## 许可证
 
