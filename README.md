@@ -143,6 +143,10 @@ Points worth knowing:
   reach for if the labels look dim against a dark background, where the darker
   end of this palette would otherwise sit too close to the surface.
 
+  The labels are 10px at weight 500 for the same reason: at hairline weights the
+  antialiasing of small text lightens a mid-tone hex until it reads as a tint of
+  the surrounding text rather than as its own color.
+
 ## Development
 
 Plain JavaScript, no build step. `client.js` is the browser half and is loaded

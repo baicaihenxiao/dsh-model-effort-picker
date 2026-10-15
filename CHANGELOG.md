@@ -23,14 +23,14 @@ All notable changes to this bundle are documented here. The format follows
 - Thinner effort bar. The track and thumb are drawn by the bundle (3px track,
   10px thumb, filled up to the thumb's centre) instead of coming from the native
   range control, whose own track and thumb size cannot be reduced by shrinking
-  its box. The label row keeps its 11px/9px geometry.
+  its box. The label row keeps its 11px geometry.
 - The track past the selected level is drawn in the quieter label tone
   (`--dsw-alias-label-caption`) rather than the label color, so the filled part
   up to the thumb is the only strong element.
-- The level labels render at full ramp strength (`TINT_STRENGTH` is 100 now,
-  down from a 70% mix with the label color) and each stop's mark is wider than
-  the hairline it was, so the palette is plainly visible instead of tinted
-  toward the surrounding text color.
+- The level labels carry their ramp color plainly: `TINT_STRENGTH` is 100 (the
+  palette hex itself, no longer mixed toward the label color) and the text is
+  10px at weight 500, so the color survives 9px-style antialiasing instead of
+  reading as a tint of the surrounding text.
 
 ### Added
 
