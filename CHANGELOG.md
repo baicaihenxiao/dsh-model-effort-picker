@@ -6,6 +6,18 @@ All notable changes to this bundle are documented here. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- Shorter effort slider: a 10px control with 8px level names, one-pixel tick
+  marks, and a 9px label row, replacing the 12px/9px geometry.
+
+### Added
+
+- Level labels are tinted from the lowest level to the highest, with four
+  schemes shipping in `client.js` (`heat`, `severity`, `mono`, `warm`) and
+  `TINT_SCHEME` selecting the active one. Tints mix toward the label color by
+  `TINT_STRENGTH` to keep the small text legible in both palettes.
+
 ## [1.0.0] - 2026-10-15
 
 ### Added

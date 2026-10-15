@@ -28,7 +28,7 @@ const React = {
   useMemo: (compute) => compute(),
   useRef: () => ({ current: null }),
   useState: () => [undefined, () => {}],
-  useSyncExternalStore: () => undefined,
+  useSyncExternalStore: (_subscribe, getSnapshot) => getSnapshot(),
 };
 
 const plugin = loads[0].factory((name) => {
@@ -95,4 +95,55 @@ assert.deepEqual(
   'both seats are registered with the winning model priority',
 );
 
-console.log('client bundle loads and wires the model seat plus the effort slider');
+// Render the slider from a fabricated session snapshot and inspect its stops.
+const LEVELS = ['low', 'medium', 'high', 'max'];
+const snapshot = {
+  current: { provider: 'p', model: 'm' },
+  groups: [
+    {
+      id: 'p',
+      name: 'P',
+      models: [
+        {
+          id: 'm',
+          name: 'M',
+          // No defaultEffort, so the slider prepends a "provider default" stop.
+          reasoning: { efforts: LEVELS.map((id) => ({ id, name: id })) },
+        },
+      ],
+    },
+  ],
+  status: 'ready',
+  pending: null,
+  retainedEffort: undefined,
+};
+
+const slider = registered.find(
+  ({ options }) => options.name === 'conversation.input.activity',
+).component;
+const tree = slider({
+  locked: false,
+  available: true,
+  directory: { subscribe: () => () => {}, getSnapshot: () => snapshot },
+  load: () => {},
+  select: () => Promise.resolve(true),
+  t: (key) => key,
+});
+
+const ticks = [];
+(function walk(node) {
+  if (Array.isArray(node)) return node.forEach(walk);
+  if (node === null || typeof node !== 'object') return;
+  if (node.props?.className === 'mfl-effortTick') ticks.push(node);
+  walk(node.children);
+})(tree);
+
+assert.equal(ticks.length, LEVELS.length + 1, 'one tick per level, plus the provider default');
+const tints = ticks.map((tick) => tick.props.style.color);
+assert.equal(new Set(tints).size, tints.length, 'every level gets its own tint');
+assert.ok(
+  tints.every((tint) => typeof tint === 'string' && tint.includes('color-mix(')),
+  'tints are mixed from theme tokens',
+);
+
+console.log('client bundle loads, wires both seats, and tints one stop per level');

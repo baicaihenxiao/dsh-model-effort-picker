@@ -82,12 +82,12 @@ window.__ModuleLoader__.load({
       '.mfl-retry{flex:none;padding:0;border:0;background:none;color:inherit;font:inherit;font-weight:600;cursor:pointer}',
       '.mfl-effort{display:flex;align-items:center;padding:0 6px;border-radius:var(--dsw-radius-sm,6px);color:var(--dsw-alias-label-secondary)}',
       '.mfl-effort:hover{background:var(--dsw-alias-interactive-bg-hover)}',
-      '.mfl-effortSlider{position:relative;box-sizing:border-box;flex:none;width:150px;padding-bottom:11px}',
-      '.mfl-effortRange{box-sizing:border-box;display:block;width:100%;height:12px;margin:0;font-size:11px;cursor:pointer;accent-color:var(--dsw-alias-brand-primary)}',
+      '.mfl-effortSlider{position:relative;box-sizing:border-box;flex:none;width:150px;padding-bottom:9px}',
+      '.mfl-effortRange{box-sizing:border-box;display:block;width:100%;height:10px;margin:0;font-size:10px;cursor:pointer;accent-color:var(--dsw-alias-brand-primary)}',
       '.mfl-effortRange:disabled{cursor:default}',
-      '.mfl-effortTicks{position:absolute;left:0;right:0;bottom:0;height:11px}',
-      '.mfl-effortTick{position:absolute;bottom:0;display:flex;flex-direction:column;align-items:center;font-size:9px;line-height:9px;white-space:nowrap;color:var(--dsw-alias-label-tertiary)}',
-      '.mfl-effortTick::before{content:"";display:block;width:1px;height:2px;background:currentColor}',
+      '.mfl-effortTicks{position:absolute;left:0;right:0;bottom:0;height:9px}',
+      '.mfl-effortTick{position:absolute;bottom:0;display:flex;flex-direction:column;align-items:center;font-size:8px;line-height:8px;white-space:nowrap;color:var(--dsw-alias-label-tertiary)}',
+      '.mfl-effortTick::before{content:"";display:block;width:1px;height:1px;background:currentColor}',
       '.mfl-searchRow{flex-shrink:0;margin:2px 0 3px}',
       '.mfl-search{box-sizing:border-box;width:100%;height:28px;padding:0 8px;border:1px solid transparent;border-radius:var(--dsw-radius-md,8px);background:transparent;color:inherit;font-size:12px;outline:none}',
       '.mfl-search::placeholder{color:var(--dsw-alias-label-caption,var(--dsw-alias-label-tertiary))}',
@@ -151,6 +151,71 @@ window.__ModuleLoader__.load({
     };
 
     const getProviderPrefs = () => providerPrefs.value;
+
+    /**
+     * Candidate tints for the level labels, each a ramp from the lowest level to
+     * the highest. Pick one with {@link TINT_SCHEME}; the others stay here so
+     * switching is a one-word change.
+     *
+     * `heat` runs muted → high-contrast → hot, `severity` is the discrete
+     * grey/green/amber/red scale, `mono` adds contrast without any hue, and
+     * `warm` starts warm so even the cheapest level carries a color.
+     */
+    const TINT_SCHEMES = {
+      heat: [
+        'var(--dsw-alias-label-tertiary)',
+        'var(--dsw-alias-brand-primary)',
+        'var(--dsw-alias-state-error-primary)',
+      ],
+      severity: [
+        'var(--dsw-alias-label-tertiary)',
+        'var(--dsw-alias-state-success-primary)',
+        'var(--dsw-alias-state-warn-primary)',
+        'var(--dsw-alias-state-error-primary)',
+      ],
+      mono: ['var(--dsw-alias-label-tertiary)', 'var(--dsw-alias-label-primary)'],
+      warm: [
+        'var(--dsw-alias-state-success-primary)',
+        'var(--dsw-alias-state-warn-primary)',
+        'var(--dsw-alias-state-error-primary)',
+      ],
+    };
+
+    /** Active scheme name; must be a key of {@link TINT_SCHEMES}. */
+    const TINT_SCHEME = 'heat';
+
+    /**
+     * Share of the scheme color kept in the label text; the remainder goes to
+     * the label color. Lower it for more contrast, raise it for more saturation
+     * — the state hues (green, amber) are light, and these labels are 8px.
+     */
+    const TINT_STRENGTH = 70;
+
+    /**
+     * Interpolate a ramp at one position, using nested `color-mix` so the ramp
+     * works for any level count and both palettes.
+     * @param stops - ramp colors, lowest level first.
+     * @param ratio - 0 at the lowest level, 1 at the highest.
+     * @returns the CSS color at that position.
+     */
+    function rampAt(stops, ratio) {
+      if (stops.length < 2) return stops[0];
+      const scaled = Math.min(1, Math.max(0, ratio)) * (stops.length - 1);
+      const lower = Math.min(stops.length - 2, Math.floor(scaled));
+      return `color-mix(in oklab, ${stops[lower + 1]} ${Math.round((scaled - lower) * 100)}%, ${stops[lower]})`;
+    }
+
+    /**
+     * Tint for one level label.
+     * @param index - level position, lowest first.
+     * @param count - number of levels.
+     * @returns a CSS color for the tick label and its mark.
+     */
+    function effortTint(index, count) {
+      const ratio = count < 2 ? 1 : index / (count - 1);
+      const ramp = rampAt(TINT_SCHEMES[TINT_SCHEME] ?? TINT_SCHEMES.heat, ratio);
+      return `color-mix(in oklab, ${ramp} ${TINT_STRENGTH}%, var(--dsw-alias-label-primary))`;
+    }
 
     /**
      * Whether a model advertises the provider's fast mode. The provider applies
@@ -707,15 +772,17 @@ window.__ModuleLoader__.load({
                 {
                   key: level.id ?? 'default',
                   className: 'mfl-effortTick',
-                  style:
-                    index === 0
+                  style: {
+                    color: effortTint(index, levels.length),
+                    ...(index === 0
                       ? { left: 0 }
                       : index === levels.length - 1
                         ? { right: 0 }
                         : {
                             left: `${(index / (levels.length - 1)) * 100}%`,
                             transform: 'translateX(-50%)',
-                          },
+                          }),
+                  },
                 },
                 level.tick ?? level.name,
               ),

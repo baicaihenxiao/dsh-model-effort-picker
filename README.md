@@ -103,8 +103,22 @@ Points worth knowing:
   already the current tier, because only the provider's Host half knows which
   models advertise it. Output verbosity is not offered here — it stays on the
   provider's own settings page.
-- **Fixed geometry.** The slider is a fixed 150px track; the tick labels are
-  drawn by this bundle, so switching tiers never resizes the control.
+- **Fixed geometry.** The slider is a fixed 150px track with a compressed
+  height (10px control, 8px level names); the tick labels are drawn by this
+  bundle, so switching tiers never resizes the control.
+- **Level tint.** The level labels are tinted along a ramp from the lowest level
+  to the highest. Four schemes ship in `client.js`, and `TINT_SCHEME` picks one:
+
+  | Scheme | Ramp (low → high) |
+  |---|---|
+  | `heat` (default) | muted grey → the label color → red |
+  | `severity` | muted grey → green → amber → red |
+  | `mono` | muted grey → the label color (contrast only, no hue) |
+  | `warm` | green → amber → red (colored from the lowest level) |
+
+  Each tint is mixed toward `--dsw-alias-label-primary` by `TINT_STRENGTH` (70%
+  scheme color, 30% label color) to keep 8px text legible in both palettes:
+  raise it for more saturation, lower it for more contrast.
 
 ## Development
 
