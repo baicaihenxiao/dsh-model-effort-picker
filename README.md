@@ -50,6 +50,11 @@ install the DSH bundle at /absolute/path/to/dsh-model-effort-picker
 To remove it again, ask the agent to remove the bundle
 `dsh-model-effort-picker`, or disable it on DSH's Plugins page.
 
+- Plugin `1.1.0` is tested with DeepSeek Harness `0.2.0-rc.2`. That version is
+  what `peerDependencies` pins, so DSH refuses to install or activate this bundle
+  on a host it has not been verified against — see
+  [Requirements](#requirements) for the exact packages.
+
 ## Updating
 
 Installing from GitHub pins the commit resolved at install time in your
@@ -85,6 +90,17 @@ Points worth knowing:
   `@deepseek-ai/dsh-client-ui-conversation`, and reads the per-session model
   directory from `@deepseek-ai/dsh-client-ui-model-selection` — both ship with
   DSH, so the bundle declares no dependencies of its own.
+- A DSH version this bundle was verified against. `peerDependencies` pins the
+  three host packages it uses — `@deepseek-ai/dsh-client-locale`,
+  `@deepseek-ai/dsh-client-ui-conversation` and
+  `@deepseek-ai/dsh-client-ui-model-selection` — to `0.2.0-rc.2`, and `engines`
+  matches the host's Node range (`^22.19.0 || >=24.0.0`). DSH's plugin manager
+  evaluates every `@deepseek-ai/dsh*` peer range **against the DSH runtime
+  version** and rejects installation or activation when one does not match, so an
+  untested host fails loudly instead of rendering a broken composer. A newer host
+  version is added here once it has been checked; anyone who needs to run ahead
+  of that can grant an exact-version exemption with `dsh plugin allow-version`
+  (or the plugin manager), which accepts the risk explicitly.
 - The browser module table provides `react`; this bundle imports nothing else.
 
 ## Behaviour and limits

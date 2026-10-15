@@ -280,4 +280,21 @@ for (const reasoning of [{}, { efforts: null }, { efforts: 'low' }, { efforts: [
   );
 }
 
+// Host compatibility has to stay in step with what the bundle actually uses: DSH
+// blocks installation on `peerDependencies`, so a client package added to the
+// inject list without a pin would activate against any host version.
+const manifest = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf8'));
+const pinned = manifest.peerDependencies ?? {};
+for (const name of manifest.dsh.client.inject) {
+  assert.ok(
+    typeof pinned[name] === 'string' && pinned[name].length > 0,
+    `${name} is injected but not pinned in peerDependencies`,
+  );
+}
+assert.ok(
+  Object.keys(pinned).length === manifest.dsh.client.inject.length,
+  `peerDependencies pins exactly the injected packages: ${Object.keys(pinned).join(', ')}`,
+);
+assert.equal(manifest.engines?.node, '^22.19.0 || >=24.0.0', 'engines matches the host Node range');
+
 console.log('client bundle loads, wires both seats, and tints one stop per level');

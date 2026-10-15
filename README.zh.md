@@ -44,6 +44,10 @@ install the DSH bundle at /absolute/path/to/dsh-model-effort-picker
 
 卸载：让 agent 移除 bundle `dsh-model-effort-picker`，或在 DSH 的 Plugins 页面停用它。
 
+- 插件 `1.1.0` 已在 DeepSeek Harness `0.2.0-rc.2` 上验证。`peerDependencies` 钉的就是这个版本，
+  因此 DSH 会拒绝在未经验证的宿主上安装或启用本 bundle —— 具体钉了哪些包见
+  [依赖要求](#依赖要求)。
+
 ## 更新
 
 从 GitHub 安装会把「安装当次解析到的 commit」钉在你的 profile `pnpm-lock.yaml` 里，
@@ -75,6 +79,13 @@ install the DSH bundle at /absolute/path/to/dsh-model-effort-picker
   `conversation.input.activity`（由 `@deepseek-ai/dsh-client-ui-conversation` 声明），
   并从 `@deepseek-ai/dsh-client-ui-model-selection` 读取会话的模型目录 —— 两者都随 DSH 提供，
   所以本包自身不声明任何依赖。
+- 一个**已验证过的 DSH 版本**。`peerDependencies` 把它实际使用的三个宿主包
+  （`@deepseek-ai/dsh-client-locale`、`@deepseek-ai/dsh-client-ui-conversation`、
+  `@deepseek-ai/dsh-client-ui-model-selection`）钉在 `0.2.0-rc.2`，`engines` 与宿主的 Node 范围
+  （`^22.19.0 || >=24.0.0`）一致。DSH 的插件管理器会把每个 `@deepseek-ai/dsh*` peer 范围
+  **与 DSH 运行时版本**比对，不匹配则拒绝安装或启用 —— 所以在未验证的宿主上是**明确报错**，
+  而不是渲染出一个坏掉的输入区。验证过的新宿主版本会追加到这里；若确需提前使用，
+  可用 `dsh plugin allow-version`（或插件管理器）授予**精确版本豁免**，即显式接受该风险。
 - `react` 由浏览器模块表提供，除此之外不导入任何东西。
 
 ## 行为与限制
