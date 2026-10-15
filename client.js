@@ -82,7 +82,7 @@ window.__ModuleLoader__.load({
       '.mfl-retry{flex:none;padding:0;border:0;background:none;color:inherit;font:inherit;font-weight:600;cursor:pointer}',
       '.mfl-effort{display:flex;align-items:center;padding:0 6px;border-radius:var(--dsw-radius-sm,6px);color:var(--dsw-alias-label-secondary)}',
       '.mfl-effort:hover{background:var(--dsw-alias-interactive-bg-hover)}',
-      '.mfl-effortSlider{position:relative;box-sizing:border-box;flex:none;width:150px;padding-bottom:11px}',
+      '.mfl-effortSlider{position:relative;box-sizing:border-box;flex:none;width:178px;padding:0 var(--mfl-pad,14px) 11px}',
       // The bar is drawn here rather than left to the native control: a native
       // range keeps its own track and thumb size, so a shorter box only clips
       // them instead of thinning them.
@@ -93,7 +93,7 @@ window.__ModuleLoader__.load({
       '.mfl-effortRange::-moz-range-track{height:3px;border-radius:2px;background:var(--dsw-alias-label-tertiary)}',
       '.mfl-effortRange::-moz-range-progress{height:3px;border-radius:2px;background:var(--dsw-alias-brand-primary)}',
       '.mfl-effortRange::-moz-range-thumb{width:10px;height:10px;border:0;border-radius:50%;background:var(--dsw-alias-brand-primary)}',
-      '.mfl-effortTicks{position:absolute;left:0;right:0;bottom:0;height:11px}',
+      '.mfl-effortTicks{position:absolute;left:var(--mfl-pad,14px);right:var(--mfl-pad,14px);bottom:0;height:11px}',
       '.mfl-effortTick{position:absolute;bottom:0;display:flex;flex-direction:column;align-items:center;font-size:9px;line-height:9px;white-space:nowrap;color:var(--dsw-alias-label-tertiary)}',
       '.mfl-effortTick::before{content:"";display:block;width:1px;height:2px;background:currentColor}',
       '.mfl-searchRow{flex-shrink:0;margin:2px 0 3px}',
@@ -223,6 +223,34 @@ window.__ModuleLoader__.load({
       const ratio = count < 2 ? 1 : index / (count - 1);
       const ramp = rampAt(TINT_SCHEMES[TINT_SCHEME] ?? TINT_SCHEMES.heat, ratio);
       return `color-mix(in oklab, ${ramp} ${TINT_STRENGTH}%, var(--dsw-alias-label-primary))`;
+    }
+
+    /** Painted thumb diameter; the track insets by its radius at both ends. */
+    const THUMB_SIZE = 10;
+
+    /** Horizontal room one end label needs, so centring it stays inside the box. */
+    const END_LABEL_ROOM = 14;
+
+    /**
+     * Track length for a level count: the base length fits four levels, and each
+     * extra level widens the track so its label keeps its distance.
+     * @param count - number of levels.
+     * @returns a track length in pixels.
+     */
+    function trackLength(count) {
+      return count <= 4 ? 150 : Math.min(230, 150 + (count - 4) * 26);
+    }
+
+    /**
+     * One stop's offset inside the track — the same geometry as the painted fill,
+     * so a tick sits under the thumb that stops there.
+     * @param index - level position, lowest first.
+     * @param count - number of levels.
+     * @returns a CSS length for the stop.
+     */
+    function stopOffset(index, count) {
+      const ratio = count < 2 ? 0 : index / (count - 1);
+      return `calc(${THUMB_SIZE / 2}px + (100% - ${THUMB_SIZE}px) * ${ratio.toFixed(4)})`;
     }
 
     /**
@@ -753,7 +781,15 @@ window.__ModuleLoader__.load({
         { className: 'mfl-effort', title: t('menu.effort') },
         h(
           'span',
-          { className: 'mfl-effortSlider' },
+          {
+            className: 'mfl-effortSlider',
+            // More levels need a longer track, and the end labels need room of
+            // their own so centring them does not push them outside the box.
+            style: {
+              '--mfl-pad': `${END_LABEL_ROOM}px`,
+              width: `calc(${trackLength(levels.length)}px + 2 * var(--mfl-pad))`,
+            },
+          },
           h('input', {
             type: 'range',
             className: 'mfl-effortRange',
@@ -762,11 +798,8 @@ window.__ModuleLoader__.load({
             step: 1,
             value: shown,
             disabled: locked,
-            // The painted fill ends where the thumb's centre sits: the track is
-            // inset by the thumb's radius at both ends.
-            style: {
-              '--mfl-fill': `calc(5px + (100% - 10px) * ${(shown / (levels.length - 1)).toFixed(4)})`,
-            },
+            // The painted fill ends where the thumb's centre sits.
+            style: { '--mfl-fill': stopOffset(shown, levels.length) },
             'aria-label': t('menu.effort'),
             'aria-valuetext': levels[shown]?.name,
             onChange: (event) => setDrag({ index: Number(event.target.value), id: levels[Number(event.target.value)]?.id }),
@@ -775,7 +808,9 @@ window.__ModuleLoader__.load({
             onBlur: commit,
           }),
           // Hand-drawn stops: the native datalist draws its label row outside
-          // this control's box, so its width could not be pinned.
+          // this control's box, so its width could not be pinned. Every stop is
+          // centred on its own position — the ends included — so the gaps stay
+          // uniform and each mark sits under the thumb's stop.
           h(
             'span',
             { className: 'mfl-effortTicks', 'aria-hidden': true },
@@ -787,14 +822,8 @@ window.__ModuleLoader__.load({
                   className: 'mfl-effortTick',
                   style: {
                     color: effortTint(index, levels.length),
-                    ...(index === 0
-                      ? { left: 0 }
-                      : index === levels.length - 1
-                        ? { right: 0 }
-                        : {
-                            left: `${(index / (levels.length - 1)) * 100}%`,
-                            transform: 'translateX(-50%)',
-                          }),
+                    left: stopOffset(index, levels.length),
+                    transform: 'translateX(-50%)',
                   },
                 },
                 level.tick ?? level.name,

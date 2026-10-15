@@ -141,23 +141,26 @@ function renderSlider(levels, reasoningEffort) {
   });
   const ticks = [];
   let fill;
+  let width;
   (function walk(node) {
     if (Array.isArray(node)) return node.forEach(walk);
     if (node === null || typeof node !== 'object') return;
     if (node.props?.className === 'mfl-effortTick') ticks.push(node);
+    if (node.props?.className === 'mfl-effortSlider') width = node.props.style.width;
     if (node.props?.type === 'range') fill = node.props.style['--mfl-fill'];
     walk(node.children);
   })(tree);
-  return { ticks, fill };
+  return { ticks, fill, width };
 }
 
 // Four levels land on the scheme's tokens; more levels must still stay distinct,
 // since adapters are free to advertise more than four.
-for (const levels of [
+const CASES = [
   ['off', 'low', 'high', 'max'],
   ['off', 'minimal', 'low', 'medium', 'high', 'xhigh'],
   ['off', 'minimal', 'low', 'medium', 'high', 'xhigh', 'max', 'ultra'],
-]) {
+];
+for (const levels of CASES) {
   const { ticks } = renderSlider(levels);
   assert.equal(
     ticks.length,
@@ -174,7 +177,38 @@ for (const levels of [
     tints.every((tint) => typeof tint === 'string' && tint.includes('color-mix(')),
     `${levels.length} levels: tints are mixed from theme tokens`,
   );
+
+  // Every stop is centred on its own offset, ends included: anchoring the end
+  // labels to the box edges is what made the gaps uneven at six levels.
+  const ratios = ticks.map((tick) => {
+    const { left, right, transform } = tick.props.style;
+    assert.equal(right, undefined, `${levels.length} levels: no edge-anchored label`);
+    assert.equal(transform, 'translateX(-50%)', `${levels.length} levels: every label centred`);
+    const match = /^calc\(5px \+ \(100% - 10px\) \* ([\d.]+)\)$/.exec(left);
+    assert.ok(match, `${levels.length} levels: unexpected stop offset ${left}`);
+    return Number(match[1]);
+  });
+  assert.deepEqual(
+    ratios,
+    ratios.map((_ratio, index) => Number((index / (ratios.length - 1)).toFixed(4))),
+    `${levels.length} levels: stops are evenly spaced`,
+  );
 }
+
+// A crowded track can only be fixed by giving it room: the base length covers
+// four stops and each extra stop widens it, up to a cap. Asserted as behaviour
+// rather than as the formula, so retuning the numbers does not fail the check.
+const widths = CASES.map((levels) => renderSlider(levels).width);
+const lengths = widths.map((width) => {
+  const match = /^calc\((\d+)px \+ 2 \* var\(--mfl-pad\)\)$/.exec(width);
+  assert.ok(match, `unexpected track width ${width}`);
+  return Number(match[1]);
+});
+assert.ok(lengths[0] >= 150, `four stops keep at least the base length: ${lengths[0]}px`);
+assert.ok(
+  lengths[0] < lengths[1] && lengths[1] <= lengths[2],
+  `a longer level list widens the track: ${lengths.join('px, ')}px`,
+);
 
 // The painted fill has to trail the thumb, so it runs from the first stop to the
 // last: both ends are asserted, since a stuck or off-by-one fill is invisible in

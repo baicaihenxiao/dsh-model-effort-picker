@@ -6,6 +6,14 @@ All notable changes to this bundle are documented here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- Cramped, uneven tick labels on models with six or more levels. The end labels
+  were anchored to the block's edges while the rest were centred, so the gaps
+  differed and the marks sat off their stops; every stop is now centred on its
+  own offset, the track widens with the level count (150px base, +26px per extra
+  stop, capped at 230px) and the ends have reserved room.
+
 ### Changed
 
 - Thinner effort bar. The track and thumb are drawn by the bundle (3px track,

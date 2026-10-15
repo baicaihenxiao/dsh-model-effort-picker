@@ -103,9 +103,15 @@ Points worth knowing:
   already the current tier, because only the provider's Host half knows which
   models advertise it. Output verbosity is not offered here — it stays on the
   provider's own settings page.
-- **Fixed geometry.** The track is a fixed 150px, the level names sit in an 11px
-  row under it, and both the track and the tick labels are drawn by this bundle,
-  so switching tiers never resizes the control.
+- **Fixed geometry.** The level names sit in an 11px row under the track, and
+  both the track and the tick labels are drawn by this bundle, so switching
+  tiers never resizes the control.
+- **Stop spacing.** Each stop is centred on its own offset, ends included — the
+  ends used to be anchored to the box edges, which made the gaps uneven as soon
+  as a model had more than four levels. The track also widens as levels are
+  added (150px for four stops, then +26px per stop, capped at 230px) and the end
+  labels get 14px of reserved room, so the names keep their distance instead of
+  crowding.
 - **Thin bar.** The bar is painted by the bundle (3px track, 10px thumb) rather
   than left to the native range control, whose track and thumb keep their own
   size — a shorter box would only clip them. The filled part ends at the thumb's
