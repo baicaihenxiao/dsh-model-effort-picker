@@ -96,8 +96,9 @@ Points worth knowing:
   the seat, other plugins' own composer model menus do not render.
 - **Slider visibility.** The slider appears only when the current model
   advertises at least two reasoning levels; models without reasoning metadata
-  show no slider. An adapter that leaves the default level open gets an extra
-  "provider default" stop.
+  show no slider, and neither does metadata that carries no level list — that
+  case renders nothing rather than failing. An adapter that leaves the default
+  level open gets an extra "provider default" stop.
 - **Speed tiers.** The provider's fast tier is offered for models its own
   fallback predicate marks as fast-capable; ultra-fast appears only when it is
   already the current tier, because only the provider's Host half knows which

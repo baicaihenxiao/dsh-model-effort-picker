@@ -8,6 +8,10 @@ All notable changes to this bundle are documented here. The format follows
 
 ### Fixed
 
+- Reasoning metadata without a level list no longer throws during render: the
+  slider simply does not appear for that model, the same as a model that
+  advertises no levels. `check.mjs` covers a missing, null, non-array and empty
+  `efforts` field.
 - Cramped, uneven tick labels on models with six or more levels. The end labels
   were anchored to the block's edges while the rest were centred, so the gaps
   differed and the marks sat off their stops; every stop is now centred on its

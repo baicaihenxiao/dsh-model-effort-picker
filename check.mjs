@@ -107,7 +107,7 @@ const slider = registered.find(
  * @returns the tick nodes in level order, the range input's painted fill, and the block width.
  */
 function renderSlider(levels, options = {}) {
-  const { reasoningEffort, defaultEffort } = options;
+  const { reasoningEffort, defaultEffort, reasoning } = options;
   const snapshot = {
     current: {
       provider: 'p',
@@ -123,7 +123,7 @@ function renderSlider(levels, options = {}) {
             id: 'm',
             name: 'M',
             // Without a defaultEffort the slider prepends a "provider default" stop.
-            reasoning: {
+            reasoning: reasoning ?? {
               ...(defaultEffort === undefined ? {} : { defaultEffort }),
               efforts: levels.map((id) => ({ id, name: id })),
             },
@@ -249,5 +249,16 @@ assert.deepEqual(
   RAMP,
   'each level lands on its ramp color, in order',
 );
+
+// A catalog entry can carry reasoning metadata without a level list; the seat
+// must then render nothing rather than read the field that is not there.
+for (const reasoning of [{}, { efforts: null }, { efforts: 'low' }, { efforts: [] }]) {
+  const { ticks } = renderSlider([], { reasoning });
+  assert.equal(
+    ticks.length,
+    0,
+    `reasoning ${JSON.stringify(reasoning)}: no slider, no throw`,
+  );
+}
 
 console.log('client bundle loads, wires both seats, and tints one stop per level');

@@ -705,7 +705,10 @@ window.__ModuleLoader__.load({
       }, [state.groups, current]);
       const reasoning = model?.reasoning;
       const levels = React.useMemo(() => {
-        if (reasoning === undefined) return [];
+        // Metadata that carries no level list is a model with no choice to
+        // offer, so the seat renders nothing rather than reading a field that
+        // is not there.
+        if (!Array.isArray(reasoning?.efforts)) return [];
         const named = reasoning.efforts.map((level) => ({
           id: level.id,
           name: level.name,
