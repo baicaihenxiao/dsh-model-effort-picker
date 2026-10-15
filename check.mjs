@@ -95,55 +95,78 @@ assert.deepEqual(
   'both seats are registered with the winning model priority',
 );
 
-// Render the slider from a fabricated session snapshot and inspect its stops.
-const LEVELS = ['low', 'medium', 'high', 'max'];
-const snapshot = {
-  current: { provider: 'p', model: 'm' },
-  groups: [
-    {
-      id: 'p',
-      name: 'P',
-      models: [
-        {
-          id: 'm',
-          name: 'M',
-          // No defaultEffort, so the slider prepends a "provider default" stop.
-          reasoning: { efforts: LEVELS.map((id) => ({ id, name: id })) },
-        },
-      ],
-    },
-  ],
-  status: 'ready',
-  pending: null,
-  retainedEffort: undefined,
-};
-
+// Render the slider from fabricated session snapshots and inspect its stops.
 const slider = registered.find(
   ({ options }) => options.name === 'conversation.input.activity',
 ).component;
-const tree = slider({
-  locked: false,
-  available: true,
-  directory: { subscribe: () => () => {}, getSnapshot: () => snapshot },
-  load: () => {},
-  select: () => Promise.resolve(true),
-  t: (key) => key,
-});
 
-const ticks = [];
-(function walk(node) {
-  if (Array.isArray(node)) return node.forEach(walk);
-  if (node === null || typeof node !== 'object') return;
-  if (node.props?.className === 'mfl-effortTick') ticks.push(node);
-  walk(node.children);
-})(tree);
+/**
+ * Render the slider for one model's level list.
+ * @param levels - level ids, lowest first.
+ * @returns the tick nodes, in level order.
+ */
+function renderTicks(levels) {
+  const snapshot = {
+    current: { provider: 'p', model: 'm' },
+    groups: [
+      {
+        id: 'p',
+        name: 'P',
+        models: [
+          {
+            id: 'm',
+            name: 'M',
+            // No defaultEffort, so the slider prepends a "provider default" stop.
+            reasoning: { efforts: levels.map((id) => ({ id, name: id })) },
+          },
+        ],
+      },
+    ],
+    status: 'ready',
+    pending: null,
+    retainedEffort: undefined,
+  };
+  const tree = slider({
+    locked: false,
+    available: true,
+    directory: { subscribe: () => () => {}, getSnapshot: () => snapshot },
+    load: () => {},
+    select: () => Promise.resolve(true),
+    t: (key) => key,
+  });
+  const ticks = [];
+  (function walk(node) {
+    if (Array.isArray(node)) return node.forEach(walk);
+    if (node === null || typeof node !== 'object') return;
+    if (node.props?.className === 'mfl-effortTick') ticks.push(node);
+    walk(node.children);
+  })(tree);
+  return ticks;
+}
 
-assert.equal(ticks.length, LEVELS.length + 1, 'one tick per level, plus the provider default');
-const tints = ticks.map((tick) => tick.props.style.color);
-assert.equal(new Set(tints).size, tints.length, 'every level gets its own tint');
-assert.ok(
-  tints.every((tint) => typeof tint === 'string' && tint.includes('color-mix(')),
-  'tints are mixed from theme tokens',
-);
+// Four levels land on the scheme's tokens; more levels must still stay distinct,
+// since adapters are free to advertise more than four.
+for (const levels of [
+  ['off', 'low', 'high', 'max'],
+  ['off', 'minimal', 'low', 'medium', 'high', 'xhigh'],
+  ['off', 'minimal', 'low', 'medium', 'high', 'xhigh', 'max', 'ultra'],
+]) {
+  const ticks = renderTicks(levels);
+  assert.equal(
+    ticks.length,
+    levels.length + 1,
+    `${levels.length} levels: one tick each, plus the provider default`,
+  );
+  const tints = ticks.map((tick) => tick.props.style.color);
+  assert.equal(
+    new Set(tints).size,
+    tints.length,
+    `${levels.length} levels: every stop gets its own tint`,
+  );
+  assert.ok(
+    tints.every((tint) => typeof tint === 'string' && tint.includes('color-mix(')),
+    `${levels.length} levels: tints are mixed from theme tokens`,
+  );
+}
 
 console.log('client bundle loads, wires both seats, and tints one stop per level');

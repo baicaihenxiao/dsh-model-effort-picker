@@ -182,7 +182,7 @@ window.__ModuleLoader__.load({
     };
 
     /** Active scheme name; must be a key of {@link TINT_SCHEMES}. */
-    const TINT_SCHEME = 'heat';
+    const TINT_SCHEME = 'severity';
 
     /**
      * Share of the scheme color kept in the label text; the remainder goes to

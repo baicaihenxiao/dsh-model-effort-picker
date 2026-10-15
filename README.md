@@ -111,10 +111,16 @@ Points worth knowing:
 
   | Scheme | Ramp (low → high) |
   |---|---|
-  | `heat` (default) | muted grey → the label color → red |
-  | `severity` | muted grey → green → amber → red |
+  | `severity` (default) | muted grey → green → amber → red |
+  | `heat` | muted grey → the label color → red |
   | `mono` | muted grey → the label color (contrast only, no hue) |
   | `warm` | green → amber → red (colored from the lowest level) |
+
+  A scheme is a list of stops and the labels are **interpolated** across them, so
+  a model with more than four levels gets the in-between hues instead of
+  repeating a color: at exactly four levels each label lands on a stop, and at
+  n levels every label still gets its own tint (`node check.mjs` asserts this for
+  4, 6 and 8 levels).
 
   Each tint is mixed toward `--dsw-alias-label-primary` by `TINT_STRENGTH` (70%
   scheme color, 30% label color) to keep 8px text legible in both palettes:

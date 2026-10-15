@@ -14,9 +14,12 @@ All notable changes to this bundle are documented here. The format follows
 ### Added
 
 - Level labels are tinted from the lowest level to the highest, with four
-  schemes shipping in `client.js` (`heat`, `severity`, `mono`, `warm`) and
-  `TINT_SCHEME` selecting the active one. Tints mix toward the label color by
-  `TINT_STRENGTH` to keep the small text legible in both palettes.
+  schemes shipping in `client.js` (`severity`, the active one, plus `heat`,
+  `mono` and `warm`) selected by `TINT_SCHEME`. Tints mix toward the label color
+  by `TINT_STRENGTH` to keep the small text legible in both palettes.
+- The ramp interpolates between its stops, so a model advertising more than four
+  levels gets in-between hues rather than a repeated color; `check.mjs` asserts
+  one distinct tint per level at 4, 6 and 8 levels.
 
 ## [1.0.0] - 2026-10-15
 
