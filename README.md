@@ -111,9 +111,9 @@ Points worth knowing:
 
   | Scheme | Ramp (low → high) |
   |---|---|
-  | `severity` (default) | muted grey → green → amber → red |
+  | `mono` (default) | muted grey → the label color (contrast only, no hue) |
   | `heat` | muted grey → the label color → red |
-  | `mono` | muted grey → the label color (contrast only, no hue) |
+  | `severity` | muted grey → green → amber → red |
   | `warm` | green → amber → red (colored from the lowest level) |
 
   A scheme is a list of stops and the labels are **interpolated** across them, so
