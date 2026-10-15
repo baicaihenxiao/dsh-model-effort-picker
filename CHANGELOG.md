@@ -6,6 +6,17 @@ All notable changes to this bundle are documented here. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- Narrower effort slider: the track is 110px instead of 150px. The level names
+  under it now set the floor, since a shorter track makes them overlap.
+
+### Added
+
+- Each level label is tinted along a low-to-high ramp — muted grey at the lowest
+  level, the brand hue at the midpoint, the error hue at the highest — mixed
+  from theme tokens so it holds in both palettes.
+
 ## [1.0.0] - 2026-10-15
 
 ### Added
