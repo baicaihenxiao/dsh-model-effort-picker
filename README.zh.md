@@ -103,7 +103,8 @@ install the DSH bundle at /absolute/path/to/dsh-model-effort-picker
   （`node check.mjs` 对 4/6/8 档都做了断言）。
 
   每个颜色都按 `TINT_STRENGTH`（70% 方案色 + 30% 标签色）与 `--dsw-alias-label-primary` 混合，
-  以保证 8px 小字在亮暗两套配色下都可读：调高更艳，调低更清晰。
+  以保证 8px 小字在亮暗两套配色下都可读：调高会保留更多渐变本身的颜色（色阶更宽、最低档更淡），
+  调低则把所有档位都拉向标签色（更平，但对下限对比度更有保障）。
 
 ## 开发
 

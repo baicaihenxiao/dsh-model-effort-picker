@@ -124,7 +124,9 @@ Points worth knowing:
 
   Each tint is mixed toward `--dsw-alias-label-primary` by `TINT_STRENGTH` (70%
   scheme color, 30% label color) to keep 8px text legible in both palettes:
-  raise it for more saturation, lower it for more contrast.
+  raising it keeps more of the ramp (a wider spread, a lighter low end), and
+  lowering it pulls every label toward the label color (flatter, but with a
+  higher contrast floor).
 
 ## Development
 
