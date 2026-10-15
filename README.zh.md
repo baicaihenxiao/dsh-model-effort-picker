@@ -53,7 +53,7 @@ install the DSH bundle at /absolute/path/to/dsh-model-effort-picker
 |---|---|
 | `github:baicaihenxiao/dsh-model-effort-picker` | `dsh plugin --profile <profile> update dsh-model-effort-picker`，或先移除 bundle 再装一次 |
 | 本地克隆目录 | 在克隆目录里 `git pull` —— profile 链接的就是该目录 |
-| 指定 tag 或 commit | 安装你要的修订：`github:baicaihenxiao/dsh-model-effort-picker#v1.0.0` |
+| 指定 tag 或 commit | 安装你要的修订：`github:baicaihenxiao/dsh-model-effort-picker#v1.1.0` |
 
 需要知道的几点：
 
@@ -61,7 +61,7 @@ install the DSH bundle at /absolute/path/to/dsh-model-effort-picker
 - `plugin_manager` 的 `install_bundle` 会「装包 + 选中 bundle」两件事一起做；而 `dsh plugin`
   这条 CLI 通道只装包，用完之后需要重新选中 bundle。
 - 更新后刷新 Web 页面（或重启 `dsh web`）。
-- 用 tag 固定版本：`#v1.0.0`；分支名也可以。若用 commit SHA，必须是完整 40 位 ——
+- 用 tag 固定版本：`#v1.1.0`；分支名也可以。若用 commit SHA，必须是完整 40 位 ——
   pnpm 无法解析缩写 SHA。
 - 查看已装版本：
 

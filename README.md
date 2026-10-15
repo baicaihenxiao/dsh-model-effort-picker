@@ -60,7 +60,7 @@ itself**. How you update depends on how you installed it:
 |---|---|
 | `github:baicaihenxiao/dsh-model-effort-picker` | `dsh plugin --profile <profile> update dsh-model-effort-picker`, or remove the bundle and install it again |
 | a local checkout | `git pull` in the checkout — the profile links the directory |
-| a tag or commit | install the revision you want: `github:baicaihenxiao/dsh-model-effort-picker#v1.0.0` |
+| a tag or commit | install the revision you want: `github:baicaihenxiao/dsh-model-effort-picker#v1.1.0` |
 
 Points worth knowing:
 
@@ -70,7 +70,7 @@ Points worth knowing:
   bundle. The `dsh plugin` CLI path only installs the package, so re-select the
   bundle afterwards if you use it.
 - Reload the Web page (or restart `dsh web`) after updating.
-- Pin a release by tag — `#v1.0.0`. A branch name works too. A commit SHA must
+- Pin a release by tag — `#v1.1.0`. A branch name works too. A commit SHA must
   be the full 40 characters: pnpm cannot resolve an abbreviated one.
 - To see what you have installed, read the version in your profile:
 

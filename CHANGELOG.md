@@ -6,6 +6,8 @@ All notable changes to this bundle are documented here. The format follows
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-10-15
+
 ### Fixed
 
 - Reasoning metadata without a level list no longer throws during render: the
@@ -71,4 +73,5 @@ All notable changes to this bundle are documented here. The format follows
   registration id, inject contract, and both seat registrations.
 
 [Unreleased]: https://github.com/baicaihenxiao/dsh-model-effort-picker/commits/main
+[1.1.0]: https://github.com/baicaihenxiao/dsh-model-effort-picker/releases/tag/v1.1.0
 [1.0.0]: https://github.com/baicaihenxiao/dsh-model-effort-picker/releases/tag/v1.0.0
