@@ -96,7 +96,7 @@ window.__ModuleLoader__.load({
       '.mfl-retry{flex:none;padding:0;border:0;background:none;color:inherit;font:inherit;font-weight:600;cursor:pointer}',
       '.mfl-effort{display:flex;align-items:center;padding:0 6px;border-radius:var(--dsw-radius-sm,6px);color:var(--dsw-alias-label-secondary)}',
       '.mfl-effort:hover{background:var(--dsw-alias-interactive-bg-hover)}',
-      '.mfl-effortSlider{position:relative;box-sizing:border-box;flex:none;width:178px;padding:0 var(--mfl-pad,14px) 11px}',
+      '.mfl-effortSlider{position:relative;box-sizing:border-box;flex:none;width:178px;padding:0 var(--mfl-pad,14px) 14px}',
       // The bar is drawn here rather than left to the native control: a native
       // range keeps its own track and thumb size, so a shorter box only clips
       // them instead of thinning them.
@@ -107,8 +107,8 @@ window.__ModuleLoader__.load({
       `.mfl-effortRange::-moz-range-track{height:${TRACK_THICKNESS}px;border-radius:2px;background:${TRACK_COLOR}}`,
       `.mfl-effortRange::-moz-range-progress{height:${TRACK_THICKNESS}px;border-radius:2px;background:${FILL_COLOR}}`,
       `.mfl-effortRange::-moz-range-thumb{width:${THUMB_SIZE}px;height:${THUMB_SIZE}px;border:0;border-radius:50%;background:${FILL_COLOR}}`,
-      '.mfl-effortTicks{position:absolute;left:var(--mfl-pad,14px);right:var(--mfl-pad,14px);bottom:0;height:11px}',
-      '.mfl-effortTick{position:absolute;bottom:0;display:flex;flex-direction:column;align-items:center;font-size:10px;line-height:10px;font-weight:500;white-space:nowrap;color:var(--dsw-alias-label-tertiary)}',
+      '.mfl-effortTicks{position:absolute;left:var(--mfl-pad,14px);right:var(--mfl-pad,14px);bottom:0;height:14px}',
+      '.mfl-effortTick{position:absolute;bottom:0;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10px;line-height:10px;font-weight:500;white-space:nowrap;color:var(--dsw-alias-label-tertiary)}',
       '.mfl-effortTick::before{content:"";display:block;width:1px;height:2px;background:currentColor}',
       '.mfl-searchRow{flex-shrink:0;margin:2px 0 3px}',
       '.mfl-search{box-sizing:border-box;width:100%;height:28px;padding:0 8px;border:1px solid transparent;border-radius:var(--dsw-radius-md,8px);background:transparent;color:inherit;font-size:12px;outline:none}',

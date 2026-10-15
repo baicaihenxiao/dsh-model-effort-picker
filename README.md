@@ -104,7 +104,8 @@ Points worth knowing:
   already the current tier, because only the provider's Host half knows which
   models advertise it. Output verbosity is not offered here — it stays on the
   provider's own settings page.
-- **Fixed geometry.** The level names sit in an 11px row under the track, and
+- **Fixed geometry.** The level names sit in a 14px row under the track — its
+  mark, a 2px gap, then the name — and
   both the track and the tick labels are drawn by this bundle, so switching
   tiers never resizes the control.
 - **Stop spacing.** Each stop is centred on its own offset, ends included — the

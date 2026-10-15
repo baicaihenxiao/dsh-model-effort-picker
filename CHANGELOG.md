@@ -23,7 +23,7 @@ All notable changes to this bundle are documented here. The format follows
 - Thinner effort bar. The track and thumb are drawn by the bundle (3px track,
   9px thumb, filled up to the thumb's centre) instead of coming from the native
   range control, whose own track and thumb size cannot be reduced by shrinking
-  its box. The label row keeps its 11px geometry.
+  its box. The label row is 14px: the mark, a 2px gap, then the name.
 - The track past the selected level is drawn in the quieter label tone
   (`--dsw-alias-label-caption`) rather than the label color, so the filled part
   up to the thumb is the only strong element.
