@@ -103,12 +103,8 @@ Points worth knowing:
   already the current tier, because only the provider's Host half knows which
   models advertise it. Output verbosity is not offered here — it stays on the
   provider's own settings page.
-- **Fixed geometry.** The slider is a fixed 110px track; the tick labels are
-  drawn by this bundle, so switching tiers never resizes the control. Their
-  length is what sets that width — narrower tracks start to overlap the names.
-- **Level tint.** Each level label is tinted from the muted end of the ramp at
-  the lowest level, through the brand hue at the midpoint, to the error hue at
-  the highest, mixed from theme tokens so both palettes work.
+- **Fixed geometry.** The slider is a fixed 150px track; the tick labels are
+  drawn by this bundle, so switching tiers never resizes the control.
 
 ## Development
 

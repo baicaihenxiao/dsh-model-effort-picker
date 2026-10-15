@@ -82,7 +82,7 @@ window.__ModuleLoader__.load({
       '.mfl-retry{flex:none;padding:0;border:0;background:none;color:inherit;font:inherit;font-weight:600;cursor:pointer}',
       '.mfl-effort{display:flex;align-items:center;padding:0 6px;border-radius:var(--dsw-radius-sm,6px);color:var(--dsw-alias-label-secondary)}',
       '.mfl-effort:hover{background:var(--dsw-alias-interactive-bg-hover)}',
-      '.mfl-effortSlider{position:relative;box-sizing:border-box;flex:none;width:110px;padding-bottom:11px}',
+      '.mfl-effortSlider{position:relative;box-sizing:border-box;flex:none;width:150px;padding-bottom:11px}',
       '.mfl-effortRange{box-sizing:border-box;display:block;width:100%;height:12px;margin:0;font-size:11px;cursor:pointer;accent-color:var(--dsw-alias-brand-primary)}',
       '.mfl-effortRange:disabled{cursor:default}',
       '.mfl-effortTicks{position:absolute;left:0;right:0;bottom:0;height:11px}',
@@ -151,23 +151,6 @@ window.__ModuleLoader__.load({
     };
 
     const getProviderPrefs = () => providerPrefs.value;
-
-    /**
-     * Low-to-high tint for one level label: muted at the lowest level, the brand
-     * hue at the midpoint, the error hue at the highest. Two `color-mix`
-     * expressions keep it on theme tokens, so it works for any level count and
-     * in both palettes. Browsers without `color-mix` fall back to the style
-     * sheet's tertiary label color.
-     * @param index - level position, lowest first.
-     * @param count - number of levels.
-     * @returns a CSS color for the tick label and its mark.
-     */
-    function effortTint(index, count) {
-      const ratio = count < 2 ? 1 : index / (count - 1);
-      return ratio <= 0.5
-        ? `color-mix(in oklab, var(--dsw-alias-label-tertiary) ${Math.round((1 - ratio * 2) * 100)}%, var(--dsw-alias-brand-primary))`
-        : `color-mix(in oklab, var(--dsw-alias-state-error-primary) ${Math.round((ratio - 0.5) * 200)}%, var(--dsw-alias-brand-primary))`;
-    }
 
     /**
      * Whether a model advertises the provider's fast mode. The provider applies
@@ -724,17 +707,15 @@ window.__ModuleLoader__.load({
                 {
                   key: level.id ?? 'default',
                   className: 'mfl-effortTick',
-                  style: {
-                    color: effortTint(index, levels.length),
-                    ...(index === 0
+                  style:
+                    index === 0
                       ? { left: 0 }
                       : index === levels.length - 1
                         ? { right: 0 }
                         : {
                             left: `${(index / (levels.length - 1)) * 100}%`,
                             transform: 'translateX(-50%)',
-                          }),
-                  },
+                          },
                 },
                 level.tick ?? level.name,
               ),
