@@ -113,10 +113,12 @@ Points worth knowing:
   added (150px for four stops, then +26px per stop, capped at 230px) and the end
   labels get 14px of reserved room, so the names keep their distance instead of
   crowding.
-- **Thin bar.** The bar is painted by the bundle (3px track, 10px thumb) rather
+- **Thin bar.** The bar is painted by the bundle (3px track, 8px thumb) rather
   than left to the native range control, whose track and thumb keep their own
   size — a shorter box would only clip them. The filled part ends at the thumb's
-  centre, since the track is inset by the thumb's radius at both ends.
+  centre, since the track is inset by the thumb's radius at both ends, and the
+  part past the selected level uses a quieter tone than the labels so the fill
+  reads as the only active part.
 - **Level tint.** The level labels are tinted along a fixed six-color ramp from
   the lowest level to the highest, set by `TINT_RAMP` in `client.js`:
 

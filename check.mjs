@@ -10,9 +10,10 @@ const source = readFileSync(new URL('./client.js', import.meta.url), 'utf8');
 const loads = [];
 
 globalThis.window = { __ModuleLoader__: { load: (spec) => loads.push(spec) } };
+const injectedStyles = [];
 globalThis.document = {
   createElement: () => ({ dataset: {}, remove() {}, textContent: '' }),
-  head: { append() {} },
+  head: { append: (tag) => injectedStyles.push(tag) },
 };
 
 new Function(source)();
@@ -80,6 +81,21 @@ plugin.apply({
     },
   },
 });
+
+// The painted geometry comes from the injected style sheet, so the offsets and
+// fill asserted below are checked against it instead of restating the numbers.
+const css = injectedStyles.map((tag) => tag.textContent).join('');
+assert.ok(css.includes('.mfl-effortRange'), 'the slider style sheet is injected');
+const THUMB = Number(/::-webkit-slider-thumb\{[^}]*width:([\d.]+)px/.exec(css)[1]);
+const TRACK = Number(/::-webkit-slider-runnable-track\{height:([\d.]+)px/.exec(css)[1]);
+const THUMB_MARGIN = Number(/::-webkit-slider-thumb\{[^}]*margin-top:-([\d.]+)px/.exec(css)[1]);
+assert.equal(THUMB_MARGIN, (THUMB - TRACK) / 2, 'the thumb sits centred on the track');
+assert.ok(
+  css.includes(
+    'linear-gradient(to right,var(--dsw-alias-brand-primary) var(--mfl-fill,0%),var(--dsw-alias-label-caption) 0)',
+  ),
+  'the track past the selected level uses the quieter color',
+);
 
 assert.deepEqual(
   registered.map(({ options }) => ({
@@ -183,14 +199,17 @@ for (const levels of CASES) {
   );
 
   // Every stop is centred on its own offset, ends included: anchoring the end
-  // labels to the box edges is what made the gaps uneven at six levels.
+  // labels to the box edges is what made the gaps uneven at six levels. The
+  // offsets are checked against the painted geometry below.
   const ratios = ticks.map((tick) => {
     const { left, right, transform } = tick.props.style;
     assert.equal(right, undefined, `${levels.length} levels: no edge-anchored label`);
     assert.equal(transform, 'translateX(-50%)', `${levels.length} levels: every label centred`);
-    const match = /^calc\(5px \+ \(100% - 10px\) \* ([\d.]+)\)$/.exec(left);
+    const match = /^calc\(([\d.]+)px \+ \(100% - ([\d.]+)px\) \* ([\d.]+)\)$/.exec(left);
     assert.ok(match, `${levels.length} levels: unexpected stop offset ${left}`);
-    return Number(match[1]);
+    assert.equal(Number(match[1]), THUMB / 2, 'a stop starts at the thumb radius');
+    assert.equal(Number(match[2]), THUMB, 'a stop ends at the thumb radius');
+    return Number(match[3]);
   });
   assert.deepEqual(
     ratios,
@@ -223,8 +242,8 @@ const highEnd = renderSlider(LEVELS, { reasoningEffort: 'max' }).fill;
 assert.match(lowEnd, /\* 0\.0000\)$/, `fill starts at the lowest stop: ${lowEnd}`);
 assert.match(highEnd, /\* 1\.0000\)$/, `fill reaches the highest stop: ${highEnd}`);
 assert.ok(
-  lowEnd.includes('100% - 10px'),
-  'the fill is inset by the thumb, so its edge meets the thumb centre',
+  lowEnd.startsWith(`calc(${THUMB / 2}px + (100% - ${THUMB}px) *`),
+  `the fill is inset by the thumb, so its edge meets the thumb centre: ${lowEnd}`,
 );
 
 // The ramp is the whole point of the tint, so pin it: a model with exactly as

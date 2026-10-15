@@ -67,6 +67,20 @@ window.__ModuleLoader__.load({
       'effort.providerDefaultShort': 'Auto',
     };
 
+    /**
+     * Painted slider geometry, shared by the style sheet and the stop/fill math
+     * so the two cannot drift: the track insets by the thumb's radius at each
+     * end, and the thumb is centred on the track.
+     */
+    const THUMB_SIZE = 8;
+    const TRACK_THICKNESS = 3;
+
+    /** Track color past the selected level; one step quieter than the labels. */
+    const TRACK_COLOR = 'var(--dsw-alias-label-caption)';
+
+    /** Painted fill, behind the selected level and the thumb. */
+    const FILL_COLOR = 'var(--dsw-alias-brand-primary)';
+
     const CSS = [
       '.mfl-root{position:relative;min-width:0}',
       '.mfl-trigger{border-radius:var(--dsw-radius-sm,6px);min-width:0;max-width:min(360px,45cqw);height:28px;color:var(--dsw-alias-label-secondary);cursor:pointer;background:none;border:0;outline:none;display:flex;align-items:center;gap:4px;padding:0 4px 0 8px;font-size:13px;font-weight:400;line-height:20px}',
@@ -86,13 +100,13 @@ window.__ModuleLoader__.load({
       // The bar is drawn here rather than left to the native control: a native
       // range keeps its own track and thumb size, so a shorter box only clips
       // them instead of thinning them.
-      '.mfl-effortRange{box-sizing:border-box;display:block;width:100%;height:12px;margin:0;cursor:pointer;appearance:none;background:transparent;accent-color:var(--dsw-alias-brand-primary)}',
+      '.mfl-effortRange{box-sizing:border-box;display:block;width:100%;height:12px;margin:0;cursor:pointer;appearance:none;background:transparent;accent-color:${FILL_COLOR}}',
       '.mfl-effortRange:disabled{cursor:default}',
-      '.mfl-effortRange::-webkit-slider-runnable-track{height:3px;border-radius:2px;background:linear-gradient(to right,var(--dsw-alias-brand-primary) var(--mfl-fill,0%),var(--dsw-alias-label-tertiary) 0)}',
-      '.mfl-effortRange::-webkit-slider-thumb{appearance:none;width:10px;height:10px;margin-top:-3.5px;border-radius:50%;background:var(--dsw-alias-brand-primary)}',
-      '.mfl-effortRange::-moz-range-track{height:3px;border-radius:2px;background:var(--dsw-alias-label-tertiary)}',
-      '.mfl-effortRange::-moz-range-progress{height:3px;border-radius:2px;background:var(--dsw-alias-brand-primary)}',
-      '.mfl-effortRange::-moz-range-thumb{width:10px;height:10px;border:0;border-radius:50%;background:var(--dsw-alias-brand-primary)}',
+      `.mfl-effortRange::-webkit-slider-runnable-track{height:${TRACK_THICKNESS}px;border-radius:2px;background:linear-gradient(to right,${FILL_COLOR} var(--mfl-fill,0%),${TRACK_COLOR} 0)}`,
+      `.mfl-effortRange::-webkit-slider-thumb{appearance:none;width:${THUMB_SIZE}px;height:${THUMB_SIZE}px;margin-top:-${(THUMB_SIZE - TRACK_THICKNESS) / 2}px;border-radius:50%;background:${FILL_COLOR}}`,
+      `.mfl-effortRange::-moz-range-track{height:${TRACK_THICKNESS}px;border-radius:2px;background:${TRACK_COLOR}}`,
+      `.mfl-effortRange::-moz-range-progress{height:${TRACK_THICKNESS}px;border-radius:2px;background:${FILL_COLOR}}`,
+      `.mfl-effortRange::-moz-range-thumb{width:${THUMB_SIZE}px;height:${THUMB_SIZE}px;border:0;border-radius:50%;background:${FILL_COLOR}}`,
       '.mfl-effortTicks{position:absolute;left:var(--mfl-pad,14px);right:var(--mfl-pad,14px);bottom:0;height:11px}',
       '.mfl-effortTick{position:absolute;bottom:0;display:flex;flex-direction:column;align-items:center;font-size:9px;line-height:9px;white-space:nowrap;color:var(--dsw-alias-label-tertiary)}',
       '.mfl-effortTick::before{content:"";display:block;width:1px;height:2px;background:currentColor}',
@@ -209,9 +223,6 @@ window.__ModuleLoader__.load({
       const ramp = rampAt(TINT_RAMP, ratio);
       return `color-mix(in oklab, ${ramp} ${TINT_STRENGTH}%, var(--dsw-alias-label-primary))`;
     }
-
-    /** Painted thumb diameter; the track insets by its radius at both ends. */
-    const THUMB_SIZE = 10;
 
     /** Horizontal room one end label needs, so centring it stays inside the box. */
     const END_LABEL_ROOM = 14;
