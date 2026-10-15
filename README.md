@@ -107,7 +107,13 @@ Points worth knowing:
 - **Fixed geometry.** The level names sit in a 14px row under the track — its
   mark, a 2px gap, then the name — and
   both the track and the tick labels are drawn by this bundle, so switching
-  tiers never resizes the control.
+  tiers never resizes this block.
+- **Trigger width.** The effort caption in the model button is sized by its
+  content, as the shipped control's is, so a background painted on it by another
+  plugin hugs the text instead of stretching to a reserved width. The tool row is
+  right-anchored, so a longer caption widens the button leftwards and leaves the
+  slider and the submit button where they are; the model name gives up that space
+  first and ellipsises sooner.
 - **Stop spacing.** Each stop is centred on its own offset, ends included — the
   ends used to be anchored to the box edges, which made the gaps uneven as soon
   as a model had more than four levels. The track also widens as levels are

@@ -88,7 +88,10 @@ window.__ModuleLoader__.load({
       '.mfl-trigger:focus-visible{box-shadow:0 0 0 2px var(--dsw-focus-ring-color,var(--dsw-alias-brand-primary))}',
       '.mfl-trigger:disabled{color:var(--dsw-alias-label-dimmed,var(--dsw-alias-label-secondary));cursor:default}',
       '.mfl-triggerLabel{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
-      '.mfl-triggerEffort{box-sizing:border-box;width:4.5em;flex-shrink:1000;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:end;color:var(--dsw-alias-label-caption,var(--dsw-alias-label-tertiary))}',
+      // Sized by its content, like the shipped control's effort label: a fixed
+      // width here would stretch anything that paints a background on it (a chip
+      // from another plugin) and push the text off-centre.
+      '.mfl-triggerEffort{min-width:0;flex-shrink:1000;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--dsw-alias-label-caption,var(--dsw-alias-label-tertiary))}',
       '.mfl-triggerChevron{flex:none;color:var(--dsw-alias-label-caption,var(--dsw-alias-label-tertiary))}',
       '.mfl-menu{position:absolute;right:0;bottom:calc(100% + 8px);z-index:1100;box-sizing:border-box;display:flex;flex-direction:column;width:max-content;min-width:min(240px,calc(100vw - 32px));max-width:min(420px,calc(100vw - 32px));max-height:min(360px,calc(100vh - 96px));padding:4px;border:1px solid var(--dsw-alias-border-l1);border-radius:12px;background:var(--dsw-alias-bg-layer-2);box-shadow:var(--dsw-shadow-lv3,var(--dsw-elevation-prominent));color:var(--dsw-alias-label-primary);overflow:hidden}',
       '.mfl-status,.mfl-empty{padding:8px;color:var(--dsw-alias-label-tertiary);font-size:12px;line-height:18px}',

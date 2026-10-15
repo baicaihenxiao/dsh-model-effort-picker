@@ -31,6 +31,12 @@ All notable changes to this bundle are documented here. The format follows
   palette hex itself, no longer mixed toward the label color) and the text is
   10px at weight 500, so the color survives 9px-style antialiasing instead of
   reading as a tint of the surrounding text.
+- The effort caption in the model button is sized by its content again, as the
+  shipped control sizes it, instead of a fixed `4.5em` box with right-aligned
+  text. A chip painted on that label by another plugin now hugs the text and
+  stays centred; in exchange the button's left edge follows the caption's length,
+  which the right-anchored tool row absorbs, and the model name ellipsises
+  sooner when the caption is long.
 
 ### Added
 
