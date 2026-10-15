@@ -103,10 +103,11 @@ const slider = registered.find(
 /**
  * Render the slider for one model's level list.
  * @param levels - level ids, lowest first.
- * @param reasoningEffort - the stored level to select, if any.
- * @returns the tick nodes in level order, and the range input's painted fill.
+ * @param options - stored selection and adapter default effort.
+ * @returns the tick nodes in level order, the range input's painted fill, and the block width.
  */
-function renderSlider(levels, reasoningEffort) {
+function renderSlider(levels, options = {}) {
+  const { reasoningEffort, defaultEffort } = options;
   const snapshot = {
     current: {
       provider: 'p',
@@ -121,8 +122,11 @@ function renderSlider(levels, reasoningEffort) {
           {
             id: 'm',
             name: 'M',
-            // No defaultEffort, so the slider prepends a "provider default" stop.
-            reasoning: { efforts: levels.map((id) => ({ id, name: id })) },
+            // Without a defaultEffort the slider prepends a "provider default" stop.
+            reasoning: {
+              ...(defaultEffort === undefined ? {} : { defaultEffort }),
+              efforts: levels.map((id) => ({ id, name: id })),
+            },
           },
         ],
       },
@@ -215,12 +219,35 @@ assert.ok(
 // a static read of the CSS.
 const LEVELS = ['off', 'low', 'high', 'max'];
 const lowEnd = renderSlider(LEVELS).fill;
-const highEnd = renderSlider(LEVELS, 'max').fill;
+const highEnd = renderSlider(LEVELS, { reasoningEffort: 'max' }).fill;
 assert.match(lowEnd, /\* 0\.0000\)$/, `fill starts at the lowest stop: ${lowEnd}`);
 assert.match(highEnd, /\* 1\.0000\)$/, `fill reaches the highest stop: ${highEnd}`);
 assert.ok(
   lowEnd.includes('100% - 10px'),
   'the fill is inset by the thumb, so its edge meets the thumb centre',
+);
+
+// The ramp is the whole point of the tint, so pin it: a model with exactly as
+// many levels as the ramp has stops must land one label on each color, in order.
+const RAMP = ['#475569', '#2563EB', '#4F46E5', '#6D28D9', '#7E22CE', '#86198F'];
+const rampTicks = renderSlider(
+  ['off', 'low', 'medium', 'high', 'xhigh', 'max'],
+  { defaultEffort: 'low' },
+).ticks;
+assert.equal(rampTicks.length, RAMP.length, 'six levels with a default: no extra stop');
+
+/** The color a `color-mix(A t%, B)` actually resolves to at a ramp stop. */
+function rampStopOf(tint) {
+  const match = /color-mix\(in oklab, (#[0-9A-F]{6}) (\d+)%, (#[0-9A-F]{6})\)/.exec(tint);
+  assert.ok(match, `unexpected tint ${tint}`);
+  const [, first, share, second] = match;
+  return Number(share) === 0 ? second : first;
+}
+
+assert.deepEqual(
+  rampTicks.map((tick) => rampStopOf(tick.props.style.color)),
+  RAMP,
+  'each level lands on its ramp color, in order',
 );
 
 console.log('client bundle loads, wires both seats, and tints one stop per level');

@@ -161,41 +161,26 @@ window.__ModuleLoader__.load({
     const getProviderPrefs = () => providerPrefs.value;
 
     /**
-     * Candidate tints for the level labels, each a ramp from the lowest level to
-     * the highest. Pick one with {@link TINT_SCHEME}; the others stay here so
-     * switching is a one-word change.
-     *
-     * `heat` runs muted → high-contrast → hot, `severity` is the discrete
-     * grey/green/amber/red scale, `mono` adds contrast without any hue, and
-     * `warm` starts warm so even the cheapest level carries a color.
+     * Level ramp, lowest level first: slate → blue → indigo → violet → purple →
+     * magenta. Six stops, and the labels are interpolated across them, so any
+     * level count is covered — an adapter with exactly six levels lands each
+     * label on one of these colors.
      */
-    const TINT_SCHEMES = {
-      heat: [
-        'var(--dsw-alias-label-tertiary)',
-        'var(--dsw-alias-brand-primary)',
-        'var(--dsw-alias-state-error-primary)',
-      ],
-      severity: [
-        'var(--dsw-alias-label-tertiary)',
-        'var(--dsw-alias-state-success-primary)',
-        'var(--dsw-alias-state-warn-primary)',
-        'var(--dsw-alias-state-error-primary)',
-      ],
-      mono: ['var(--dsw-alias-label-tertiary)', 'var(--dsw-alias-label-primary)'],
-      warm: [
-        'var(--dsw-alias-state-success-primary)',
-        'var(--dsw-alias-state-warn-primary)',
-        'var(--dsw-alias-state-error-primary)',
-      ],
-    };
-
-    /** Active scheme name; must be a key of {@link TINT_SCHEMES}. */
-    const TINT_SCHEME = 'mono';
+    const TINT_RAMP = [
+      '#475569',
+      '#2563EB',
+      '#4F46E5',
+      '#6D28D9',
+      '#7E22CE',
+      '#86198F',
+    ];
 
     /**
-     * Share of the scheme color kept in the label text; the remainder goes to
-     * the label color. Lower it for more contrast, raise it for more saturation
-     * — the state hues (green, amber) are light, and these labels are 8px.
+     * Share of the ramp color kept in the label text; the remainder goes to the
+     * label color. It is what keeps these hues readable in both palettes: the
+     * label color is near-black on light and near-white on dark, so the mix
+     * darkens or brightens every stop accordingly. Set it to 100 for the exact
+     * hex values at the cost of contrast on the matching background.
      */
     const TINT_STRENGTH = 70;
 
@@ -221,7 +206,7 @@ window.__ModuleLoader__.load({
      */
     function effortTint(index, count) {
       const ratio = count < 2 ? 1 : index / (count - 1);
-      const ramp = rampAt(TINT_SCHEMES[TINT_SCHEME] ?? TINT_SCHEMES.heat, ratio);
+      const ramp = rampAt(TINT_RAMP, ratio);
       return `color-mix(in oklab, ${ramp} ${TINT_STRENGTH}%, var(--dsw-alias-label-primary))`;
     }
 

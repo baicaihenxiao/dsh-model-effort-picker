@@ -116,27 +116,29 @@ Points worth knowing:
   than left to the native range control, whose track and thumb keep their own
   size — a shorter box would only clip them. The filled part ends at the thumb's
   centre, since the track is inset by the thumb's radius at both ends.
-- **Level tint.** The level labels are tinted along a ramp from the lowest level
-  to the highest. Four schemes ship in `client.js`, and `TINT_SCHEME` picks one:
+- **Level tint.** The level labels are tinted along a fixed six-color ramp from
+  the lowest level to the highest, set by `TINT_RAMP` in `client.js`:
 
-  | Scheme | Ramp (low → high) |
-  |---|---|
-  | `mono` (default) | muted grey → the label color (contrast only, no hue) |
-  | `heat` | muted grey → the label color → red |
-  | `severity` | muted grey → green → amber → red |
-  | `warm` | green → amber → red (colored from the lowest level) |
+  | # | Color | Ramp position |
+  |---|---|---|
+  | 1 | `#475569` | slate, lowest level |
+  | 2 | `#2563EB` | blue |
+  | 3 | `#4F46E5` | indigo |
+  | 4 | `#6D28D9` | violet |
+  | 5 | `#7E22CE` | purple |
+  | 6 | `#86198F` | magenta, highest level |
 
-  A scheme is a list of stops and the labels are **interpolated** across them, so
-  a model with more than four levels gets the in-between hues instead of
-  repeating a color: at exactly four levels each label lands on a stop, and at
-  n levels every label still gets its own tint (`node check.mjs` asserts this for
-  4, 6 and 8 levels).
+  The labels are **interpolated** across the ramp, so any level count is covered
+  rather than repeating a color: a model with exactly six levels lands each label
+  on one of these colors, in order, and a model with fewer samples the ramp
+  evenly (`node check.mjs` asserts this for 4, 6 and 8 levels plus the exact
+  palette at six).
 
   Each tint is mixed toward `--dsw-alias-label-primary` by `TINT_STRENGTH` (70%
-  scheme color, 30% label color) to keep 8px text legible in both palettes:
-  raising it keeps more of the ramp (a wider spread, a lighter low end), and
-  lowering it pulls every label toward the label color (flatter, but with a
-  higher contrast floor).
+  ramp color, 30% label color). That mix is what keeps these hex hues readable in
+  both palettes — the label color is near-black on light and near-white on dark,
+  so every stop darkens or brightens with the theme. Set `TINT_STRENGTH` to 100
+  for the exact hex values, at the cost of contrast against the same background.
 
 ## Development
 
