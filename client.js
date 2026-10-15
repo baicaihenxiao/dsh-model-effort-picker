@@ -72,7 +72,7 @@ window.__ModuleLoader__.load({
      * so the two cannot drift: the track insets by the thumb's radius at each
      * end, and the thumb is centred on the track.
      */
-    const THUMB_SIZE = 10;
+    const THUMB_SIZE = 9;
     const TRACK_THICKNESS = 3;
 
     /** Track color past the selected level; one step quieter than the labels. */

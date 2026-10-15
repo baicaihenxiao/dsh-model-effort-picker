@@ -21,7 +21,7 @@ All notable changes to this bundle are documented here. The format follows
 ### Changed
 
 - Thinner effort bar. The track and thumb are drawn by the bundle (3px track,
-  10px thumb, filled up to the thumb's centre) instead of coming from the native
+  9px thumb, filled up to the thumb's centre) instead of coming from the native
   range control, whose own track and thumb size cannot be reduced by shrinking
   its box. The label row keeps its 11px geometry.
 - The track past the selected level is drawn in the quieter label tone
