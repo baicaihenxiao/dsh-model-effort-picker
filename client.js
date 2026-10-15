@@ -72,7 +72,7 @@ window.__ModuleLoader__.load({
      * so the two cannot drift: the track insets by the thumb's radius at each
      * end, and the thumb is centred on the track.
      */
-    const THUMB_SIZE = 8;
+    const THUMB_SIZE = 10;
     const TRACK_THICKNESS = 3;
 
     /** Track color past the selected level; one step quieter than the labels. */
@@ -109,7 +109,7 @@ window.__ModuleLoader__.load({
       `.mfl-effortRange::-moz-range-thumb{width:${THUMB_SIZE}px;height:${THUMB_SIZE}px;border:0;border-radius:50%;background:${FILL_COLOR}}`,
       '.mfl-effortTicks{position:absolute;left:var(--mfl-pad,14px);right:var(--mfl-pad,14px);bottom:0;height:11px}',
       '.mfl-effortTick{position:absolute;bottom:0;display:flex;flex-direction:column;align-items:center;font-size:9px;line-height:9px;white-space:nowrap;color:var(--dsw-alias-label-tertiary)}',
-      '.mfl-effortTick::before{content:"";display:block;width:1px;height:2px;background:currentColor}',
+      '.mfl-effortTick::before{content:"";display:block;width:3px;height:2px;border-radius:1px;background:currentColor}',
       '.mfl-searchRow{flex-shrink:0;margin:2px 0 3px}',
       '.mfl-search{box-sizing:border-box;width:100%;height:28px;padding:0 8px;border:1px solid transparent;border-radius:var(--dsw-radius-md,8px);background:transparent;color:inherit;font-size:12px;outline:none}',
       '.mfl-search::placeholder{color:var(--dsw-alias-label-caption,var(--dsw-alias-label-tertiary))}',
@@ -191,12 +191,12 @@ window.__ModuleLoader__.load({
 
     /**
      * Share of the ramp color kept in the label text; the remainder goes to the
-     * label color. It is what keeps these hues readable in both palettes: the
-     * label color is near-black on light and near-white on dark, so the mix
-     * darkens or brightens every stop accordingly. Set it to 100 for the exact
-     * hex values at the cost of contrast on the matching background.
+     * label color. At 100 the palette renders exactly as given, which is the
+     * most visible on the light palette; below that every stop is pulled toward
+     * the label color, which is near-black on light and near-white on dark — the
+     * lever to reach for when the labels look dim against a dark background.
      */
-    const TINT_STRENGTH = 70;
+    const TINT_STRENGTH = 100;
 
     /**
      * Interpolate a ramp at one position, using nested `color-mix` so the ramp
@@ -221,6 +221,8 @@ window.__ModuleLoader__.load({
     function effortTint(index, count) {
       const ratio = count < 2 ? 1 : index / (count - 1);
       const ramp = rampAt(TINT_RAMP, ratio);
+      // A full-strength tint needs no mixing: the ramp color is the color.
+      if (TINT_STRENGTH >= 100) return ramp;
       return `color-mix(in oklab, ${ramp} ${TINT_STRENGTH}%, var(--dsw-alias-label-primary))`;
     }
 

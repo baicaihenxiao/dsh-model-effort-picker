@@ -113,7 +113,7 @@ Points worth knowing:
   added (150px for four stops, then +26px per stop, capped at 230px) and the end
   labels get 14px of reserved room, so the names keep their distance instead of
   crowding.
-- **Thin bar.** The bar is painted by the bundle (3px track, 8px thumb) rather
+- **Thin bar.** The bar is painted by the bundle (3px track, 10px thumb) rather
   than left to the native range control, whose track and thumb keep their own
   size — a shorter box would only clip them. The filled part ends at the thumb's
   centre, since the track is inset by the thumb's radius at both ends, and the
@@ -137,11 +137,11 @@ Points worth knowing:
   evenly (`node check.mjs` asserts this for 4, 6 and 8 levels plus the exact
   palette at six).
 
-  Each tint is mixed toward `--dsw-alias-label-primary` by `TINT_STRENGTH` (70%
-  ramp color, 30% label color). That mix is what keeps these hex hues readable in
-  both palettes — the label color is near-black on light and near-white on dark,
-  so every stop darkens or brightens with the theme. Set `TINT_STRENGTH` to 100
-  for the exact hex values, at the cost of contrast against the same background.
+  `TINT_STRENGTH` (100 by default) is the purity/contrast lever: at 100 each
+  label is exactly its ramp color, which is the most visible on the light
+  palette; lower it to pull every stop toward the label color — the value to
+  reach for if the labels look dim against a dark background, where the darker
+  end of this palette would otherwise sit too close to the surface.
 
 ## Development
 
