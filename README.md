@@ -103,9 +103,13 @@ Points worth knowing:
   already the current tier, because only the provider's Host half knows which
   models advertise it. Output verbosity is not offered here — it stays on the
   provider's own settings page.
-- **Fixed geometry.** The slider is a fixed 150px track with a compressed
-  height (10px control, 8px level names); the tick labels are drawn by this
-  bundle, so switching tiers never resizes the control.
+- **Fixed geometry.** The track is a fixed 150px, the level names sit in an 11px
+  row under it, and both the track and the tick labels are drawn by this bundle,
+  so switching tiers never resizes the control.
+- **Thin bar.** The bar is painted by the bundle (3px track, 10px thumb) rather
+  than left to the native range control, whose track and thumb keep their own
+  size — a shorter box would only clip them. The filled part ends at the thumb's
+  centre, since the track is inset by the thumb's radius at both ends.
 - **Level tint.** The level labels are tinted along a ramp from the lowest level
   to the highest. Four schemes ship in `client.js`, and `TINT_SCHEME` picks one:
 

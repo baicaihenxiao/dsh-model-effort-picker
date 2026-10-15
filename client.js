@@ -82,12 +82,20 @@ window.__ModuleLoader__.load({
       '.mfl-retry{flex:none;padding:0;border:0;background:none;color:inherit;font:inherit;font-weight:600;cursor:pointer}',
       '.mfl-effort{display:flex;align-items:center;padding:0 6px;border-radius:var(--dsw-radius-sm,6px);color:var(--dsw-alias-label-secondary)}',
       '.mfl-effort:hover{background:var(--dsw-alias-interactive-bg-hover)}',
-      '.mfl-effortSlider{position:relative;box-sizing:border-box;flex:none;width:150px;padding-bottom:9px}',
-      '.mfl-effortRange{box-sizing:border-box;display:block;width:100%;height:10px;margin:0;font-size:10px;cursor:pointer;accent-color:var(--dsw-alias-brand-primary)}',
+      '.mfl-effortSlider{position:relative;box-sizing:border-box;flex:none;width:150px;padding-bottom:11px}',
+      // The bar is drawn here rather than left to the native control: a native
+      // range keeps its own track and thumb size, so a shorter box only clips
+      // them instead of thinning them.
+      '.mfl-effortRange{box-sizing:border-box;display:block;width:100%;height:12px;margin:0;cursor:pointer;appearance:none;background:transparent;accent-color:var(--dsw-alias-brand-primary)}',
       '.mfl-effortRange:disabled{cursor:default}',
-      '.mfl-effortTicks{position:absolute;left:0;right:0;bottom:0;height:9px}',
-      '.mfl-effortTick{position:absolute;bottom:0;display:flex;flex-direction:column;align-items:center;font-size:8px;line-height:8px;white-space:nowrap;color:var(--dsw-alias-label-tertiary)}',
-      '.mfl-effortTick::before{content:"";display:block;width:1px;height:1px;background:currentColor}',
+      '.mfl-effortRange::-webkit-slider-runnable-track{height:3px;border-radius:2px;background:linear-gradient(to right,var(--dsw-alias-brand-primary) var(--mfl-fill,0%),var(--dsw-alias-label-tertiary) 0)}',
+      '.mfl-effortRange::-webkit-slider-thumb{appearance:none;width:10px;height:10px;margin-top:-3.5px;border-radius:50%;background:var(--dsw-alias-brand-primary)}',
+      '.mfl-effortRange::-moz-range-track{height:3px;border-radius:2px;background:var(--dsw-alias-label-tertiary)}',
+      '.mfl-effortRange::-moz-range-progress{height:3px;border-radius:2px;background:var(--dsw-alias-brand-primary)}',
+      '.mfl-effortRange::-moz-range-thumb{width:10px;height:10px;border:0;border-radius:50%;background:var(--dsw-alias-brand-primary)}',
+      '.mfl-effortTicks{position:absolute;left:0;right:0;bottom:0;height:11px}',
+      '.mfl-effortTick{position:absolute;bottom:0;display:flex;flex-direction:column;align-items:center;font-size:9px;line-height:9px;white-space:nowrap;color:var(--dsw-alias-label-tertiary)}',
+      '.mfl-effortTick::before{content:"";display:block;width:1px;height:2px;background:currentColor}',
       '.mfl-searchRow{flex-shrink:0;margin:2px 0 3px}',
       '.mfl-search{box-sizing:border-box;width:100%;height:28px;padding:0 8px;border:1px solid transparent;border-radius:var(--dsw-radius-md,8px);background:transparent;color:inherit;font-size:12px;outline:none}',
       '.mfl-search::placeholder{color:var(--dsw-alias-label-caption,var(--dsw-alias-label-tertiary))}',
@@ -754,6 +762,11 @@ window.__ModuleLoader__.load({
             step: 1,
             value: shown,
             disabled: locked,
+            // The painted fill ends where the thumb's centre sits: the track is
+            // inset by the thumb's radius at both ends.
+            style: {
+              '--mfl-fill': `calc(5px + (100% - 10px) * ${(shown / (levels.length - 1)).toFixed(4)})`,
+            },
             'aria-label': t('menu.effort'),
             'aria-valuetext': levels[shown]?.name,
             onChange: (event) => setDrag({ index: Number(event.target.value), id: levels[Number(event.target.value)]?.id }),

@@ -103,11 +103,16 @@ const slider = registered.find(
 /**
  * Render the slider for one model's level list.
  * @param levels - level ids, lowest first.
- * @returns the tick nodes, in level order.
+ * @param reasoningEffort - the stored level to select, if any.
+ * @returns the tick nodes in level order, and the range input's painted fill.
  */
-function renderTicks(levels) {
+function renderSlider(levels, reasoningEffort) {
   const snapshot = {
-    current: { provider: 'p', model: 'm' },
+    current: {
+      provider: 'p',
+      model: 'm',
+      ...(reasoningEffort === undefined ? {} : { reasoningEffort }),
+    },
     groups: [
       {
         id: 'p',
@@ -135,13 +140,15 @@ function renderTicks(levels) {
     t: (key) => key,
   });
   const ticks = [];
+  let fill;
   (function walk(node) {
     if (Array.isArray(node)) return node.forEach(walk);
     if (node === null || typeof node !== 'object') return;
     if (node.props?.className === 'mfl-effortTick') ticks.push(node);
+    if (node.props?.type === 'range') fill = node.props.style['--mfl-fill'];
     walk(node.children);
   })(tree);
-  return ticks;
+  return { ticks, fill };
 }
 
 // Four levels land on the scheme's tokens; more levels must still stay distinct,
@@ -151,7 +158,7 @@ for (const levels of [
   ['off', 'minimal', 'low', 'medium', 'high', 'xhigh'],
   ['off', 'minimal', 'low', 'medium', 'high', 'xhigh', 'max', 'ultra'],
 ]) {
-  const ticks = renderTicks(levels);
+  const { ticks } = renderSlider(levels);
   assert.equal(
     ticks.length,
     levels.length + 1,
@@ -168,5 +175,18 @@ for (const levels of [
     `${levels.length} levels: tints are mixed from theme tokens`,
   );
 }
+
+// The painted fill has to trail the thumb, so it runs from the first stop to the
+// last: both ends are asserted, since a stuck or off-by-one fill is invisible in
+// a static read of the CSS.
+const LEVELS = ['off', 'low', 'high', 'max'];
+const lowEnd = renderSlider(LEVELS).fill;
+const highEnd = renderSlider(LEVELS, 'max').fill;
+assert.match(lowEnd, /\* 0\.0000\)$/, `fill starts at the lowest stop: ${lowEnd}`);
+assert.match(highEnd, /\* 1\.0000\)$/, `fill reaches the highest stop: ${highEnd}`);
+assert.ok(
+  lowEnd.includes('100% - 10px'),
+  'the fill is inset by the thumb, so its edge meets the thumb centre',
+);
 
 console.log('client bundle loads, wires both seats, and tints one stop per level');

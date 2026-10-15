@@ -8,8 +8,10 @@ All notable changes to this bundle are documented here. The format follows
 
 ### Changed
 
-- Shorter effort slider: a 10px control with 8px level names, one-pixel tick
-  marks, and a 9px label row, replacing the 12px/9px geometry.
+- Thinner effort bar. The track and thumb are drawn by the bundle (3px track,
+  10px thumb, filled up to the thumb's centre) instead of coming from the native
+  range control, whose own track and thumb size cannot be reduced by shrinking
+  its box. The label row keeps its 11px/9px geometry.
 
 ### Added
 
