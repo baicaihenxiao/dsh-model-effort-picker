@@ -6,6 +6,20 @@ All notable changes to this bundle are documented here. The format follows
 
 ## [Unreleased]
 
+## [1.1.1] - 2026-10-15
+
+### Added
+
+- Host compatibility is declared rather than assumed, so the version this bundle
+  was verified against is enforced rather than described. `peerDependencies` pins
+  the three host packages it uses to `0.2.0-rc.2` and `engines` matches the host's
+  Node range. DSH evaluates every `@deepseek-ai/dsh*` peer range against its
+  runtime version and refuses installation or activation on a mismatch — an
+  exact-version exemption is the documented way to run ahead — so an untested
+  host fails loudly instead of rendering a broken composer. Both READMEs state
+  the tested version, and `check.mjs` asserts every client `inject` entry is
+  pinned, so adding a host package without pinning it fails the check.
+
 ## [1.1.0] - 2026-10-15
 
 ### Fixed
@@ -50,15 +64,6 @@ All notable changes to this bundle are documented here. The format follows
 - Every tint mixes toward the label color by `TINT_STRENGTH`, which is what keeps
   these hex hues readable in both palettes; `check.mjs` asserts one distinct tint
   per level at 4, 6 and 8 levels, and the exact palette at six.
-- Host compatibility is declared rather than assumed. `peerDependencies` pins the
-  three host packages this bundle uses to the version it was verified against
-  (`0.2.0-rc.2`) and `engines` matches the host's Node range. DSH evaluates every
-  `@deepseek-ai/dsh*` peer range against its runtime version and refuses
-  installation or activation on a mismatch — an exact-version exemption is the
-  documented way to run ahead — so an untested host fails loudly instead of
-  rendering a broken composer. Both READMEs state the tested version, and
-  `check.mjs` asserts every client `inject` entry is pinned, so adding a host
-  package without pinning it fails the check.
 
 ## [1.0.0] - 2026-10-15
 
@@ -82,5 +87,6 @@ All notable changes to this bundle are documented here. The format follows
   registration id, inject contract, and both seat registrations.
 
 [Unreleased]: https://github.com/baicaihenxiao/dsh-model-effort-picker/commits/main
+[1.1.1]: https://github.com/baicaihenxiao/dsh-model-effort-picker/releases/tag/v1.1.1
 [1.1.0]: https://github.com/baicaihenxiao/dsh-model-effort-picker/releases/tag/v1.1.0
 [1.0.0]: https://github.com/baicaihenxiao/dsh-model-effort-picker/releases/tag/v1.0.0
