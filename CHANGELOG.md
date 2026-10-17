@@ -6,6 +6,8 @@ All notable changes to this bundle are documented here. The format follows
 
 ## [Unreleased]
 
+## [1.1.2] - 2026-10-17
+
 ### Added
 
 - DeepSeek Harness `0.2.1-rc.2` support beside `0.2.0-rc.2`: the three host
@@ -102,6 +104,7 @@ All notable changes to this bundle are documented here. The format follows
   registration id, inject contract, and both seat registrations.
 
 [Unreleased]: https://github.com/baicaihenxiao/dsh-model-effort-picker/commits/main
+[1.1.2]: https://github.com/baicaihenxiao/dsh-model-effort-picker/releases/tag/v1.1.2
 [1.1.1]: https://github.com/baicaihenxiao/dsh-model-effort-picker/releases/tag/v1.1.1
 [1.1.0]: https://github.com/baicaihenxiao/dsh-model-effort-picker/releases/tag/v1.1.0
 [1.0.0]: https://github.com/baicaihenxiao/dsh-model-effort-picker/releases/tag/v1.0.0
