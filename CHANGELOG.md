@@ -6,6 +6,21 @@ All notable changes to this bundle are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- DeepSeek Harness `0.2.1-rc.2` support beside `0.2.0-rc.2`: the three host
+  peers accept `0.2.0-rc.2 || 0.2.1-rc.2`, both checked in a browser.
+
+### Fixed
+
+- The model seat and the effort slider crashed on DSH `0.2.1-rc.2` ("cannot get
+  property remote.session without inject") and the host's own selector rendered
+  instead. From cordis 4.0.5 a service method runs under the caller's inject, and
+  `modelDirectories.directoryFor` reads `remote.session`, so the client half now
+  injects it; `check.mjs` asserts the inject list.
+- Closing the model menu threw `ReferenceError: setEffortOpen is not defined`,
+  which skipped resetting the speed submenu and returning focus to the trigger.
+
 ## [1.1.1] - 2026-10-15
 
 ### Added

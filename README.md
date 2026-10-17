@@ -93,7 +93,7 @@ Points worth knowing:
 - A DSH version this bundle was verified against. `peerDependencies` pins the
   three host packages it uses — `@deepseek-ai/dsh-client-locale`,
   `@deepseek-ai/dsh-client-ui-conversation` and
-  `@deepseek-ai/dsh-client-ui-model-selection` — to `0.2.0-rc.2`, and `engines`
+  `@deepseek-ai/dsh-client-ui-model-selection` — to `0.2.0-rc.2 || 0.2.1-rc.2`, and `engines`
   matches the host's Node range (`^22.19.0 || >=24.0.0`). DSH's plugin manager
   evaluates every `@deepseek-ai/dsh*` peer range **against the DSH runtime
   version** and rejects installation or activation when one does not match, so an

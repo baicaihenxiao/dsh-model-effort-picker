@@ -44,6 +44,7 @@ assert.deepEqual(plugin.inject, [
   'modelDirectories',
   'sessions',
   'remote',
+  'remote.session', // read by modelDirectories.directoryFor under our inject on DSH 0.2.1+
   'remote.settings',
 ]);
 

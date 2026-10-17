@@ -413,7 +413,6 @@ window.__ModuleLoader__.load({
       const close = (restoreFocus) => {
         setOpen(false);
         setQuery('');
-        setEffortOpen(false);
         setSpeedOpen(false);
         if (restoreFocus) queueMicrotask(() => triggerRef.current?.focus());
       };
@@ -839,7 +838,9 @@ window.__ModuleLoader__.load({
     }
 
     return {
-      inject: ['slots', 'locale', 'modelDirectories', 'sessions', 'remote', 'remote.settings'],
+      // `remote.session`: from cordis 4.0.5 (DSH 0.2.1) a service method runs
+      // under the caller's inject, and `modelDirectories.directoryFor` reads it.
+      inject: ['slots', 'locale', 'modelDirectories', 'sessions', 'remote', 'remote.session', 'remote.settings'],
       apply(ctx) {
         ctx.effect(
           () => ctx.locale.register(NS, { zh, en }),

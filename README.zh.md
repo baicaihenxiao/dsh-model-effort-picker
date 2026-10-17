@@ -81,7 +81,7 @@ install the DSH bundle at /absolute/path/to/dsh-model-effort-picker
   所以本包自身不声明任何依赖。
 - 一个**已验证过的 DSH 版本**。`peerDependencies` 把它实际使用的三个宿主包
   （`@deepseek-ai/dsh-client-locale`、`@deepseek-ai/dsh-client-ui-conversation`、
-  `@deepseek-ai/dsh-client-ui-model-selection`）钉在 `0.2.0-rc.2`，`engines` 与宿主的 Node 范围
+  `@deepseek-ai/dsh-client-ui-model-selection`）钉在 `0.2.0-rc.2 || 0.2.1-rc.2`，`engines` 与宿主的 Node 范围
   （`^22.19.0 || >=24.0.0`）一致。DSH 的插件管理器会把每个 `@deepseek-ai/dsh*` peer 范围
   **与 DSH 运行时版本**比对，不匹配则拒绝安装或启用 —— 所以在未验证的宿主上是**明确报错**，
   而不是渲染出一个坏掉的输入区。验证过的新宿主版本会追加到这里；若确需提前使用，
