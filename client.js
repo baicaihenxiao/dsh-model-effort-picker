@@ -153,11 +153,14 @@ window.__ModuleLoader__.load({
 
     /**
      * The provider preferences this menu honours: models it hides, its speed
-     * mode, the namespace to write back to, and whether writes are accepted.
+     * mode, the models its catalog offers each faster tier on, the namespace to
+     * write back to, and whether writes are accepted.
      */
     const providerPrefs = {
       value: Object.freeze({
         hidden: Object.freeze([]),
+        fastModels: undefined,
+        ultrafastModels: Object.freeze([]),
         ns: undefined,
         speedMode: undefined,
         writable: false,
@@ -255,10 +258,10 @@ window.__ModuleLoader__.load({
     }
 
     /**
-     * Whether a model advertises the provider's fast mode. The provider applies
-     * its own host-supplied list first and falls back to this predicate.
-     * ponytail: predicate mirrored from the provider plugin, which keeps it in
-     * its client bundle; drop the mirror if it ever exposes the list publicly.
+     * Whether a model advertises the provider's fast mode, used only until the
+     * provider's own catalog list arrives — the same fallback it applies.
+     * shortcut: predicate mirrored from the provider plugin; it misses newer
+     * models (gpt-6.1-sol), so the catalog list must win whenever it loads.
      */
     const supportsFastMode = (modelId) =>
       typeof modelId === 'string' &&
@@ -307,7 +310,16 @@ window.__ModuleLoader__.load({
      * @param props - owner `locked`, the injected directory face, and `t`.
      * @returns the trigger and, while open, the first-level model menu.
      */
-    function ModelFirstLevel({ locked, available, directory, load, select, setSpeedMode, t }) {
+    function ModelFirstLevel({
+      locked,
+      available,
+      directory,
+      load,
+      select,
+      setSpeedMode,
+      refreshPrefs,
+      t,
+    }) {
       const state = React.useSyncExternalStore(directory.subscribe, directory.getSnapshot);
       const [open, setOpen] = React.useState(false);
       const [query, setQuery] = React.useState('');
@@ -374,8 +386,17 @@ window.__ModuleLoader__.load({
         fast: t('speed.fast'),
         ultrafast: t('speed.ultrafast'),
       };
+      const codex = current?.provider === 'openai-codex';
       const fastSupported =
-        current?.provider === 'openai-codex' && supportsFastMode(current?.model);
+        codex && (prefs.fastModels?.includes(current.model) ?? supportsFastMode(current.model));
+      const ultrafastSupported = codex && prefs.ultrafastModels.includes(current.model);
+      // The tier the provider actually sends: a stored tier this model lacks runs as standard.
+      const shownSpeed =
+        ultrafastSupported && speedMode === 'ultrafast'
+          ? 'ultrafast'
+          : fastSupported && speedMode === 'fast'
+            ? 'fast'
+            : 'standard';
       const speedChoices = React.useMemo(() => {
         if (current?.provider !== 'openai-codex') return [];
         const modes = [
@@ -394,9 +415,7 @@ window.__ModuleLoader__.load({
             description: t('speed.fastHint'),
           });
         }
-        // Ultrafast is advertised only by the provider's host list, which this
-        // seat cannot read; keep the current tier selectable when it is one.
-        if (speedMode === 'ultrafast') {
+        if (ultrafastSupported) {
           modes.push({
             key: 'speed:ultrafast',
             mode: 'ultrafast',
@@ -405,7 +424,7 @@ window.__ModuleLoader__.load({
           });
         }
         return modes;
-      }, [current, fastSupported, speedMode, t]);
+      }, [current, fastSupported, ultrafastSupported, t]);
 
       const busy = state.status === 'selecting';
       const pending = state.pending ?? null;
@@ -534,6 +553,8 @@ window.__ModuleLoader__.load({
               else {
                 setOpen(true);
                 load();
+                // The provider's catalog may have loaded since the last read.
+                refreshPrefs();
               }
             },
           },
@@ -659,11 +680,7 @@ window.__ModuleLoader__.load({
                         onClick: () => setSpeedOpen((value) => !value),
                       },
                       h('span', { className: 'mfl-cellLabel' }, t('menu.speed')),
-                      h(
-                        'span',
-                        { className: 'mfl-cellValue' },
-                        speedModeLabel[speedMode] ?? speedMode ?? '',
-                      ),
+                      h('span', { className: 'mfl-cellValue' }, speedModeLabel[shownSpeed]),
                       chevronRight(),
                     ),
                     speedOpen
@@ -675,7 +692,7 @@ window.__ModuleLoader__.load({
                               key: choice.key,
                               label: choice.label,
                               description: choice.description,
-                              selected: speedMode === choice.mode,
+                              selected: shownSpeed === choice.mode,
                               disabled: !prefs.writable,
                               onClick: () => chooseSpeed(choice.mode),
                             }),
@@ -840,7 +857,16 @@ window.__ModuleLoader__.load({
     return {
       // `remote.session`: from cordis 4.0.5 (DSH 0.2.1) a service method runs
       // under the caller's inject, and `modelDirectories.directoryFor` reads it.
-      inject: ['slots', 'locale', 'modelDirectories', 'sessions', 'remote', 'remote.session', 'remote.settings'],
+      inject: [
+        'slots',
+        'locale',
+        'modelDirectories',
+        'sessions',
+        'connection',
+        'remote',
+        'remote.session',
+        'remote.settings',
+      ],
       apply(ctx) {
         ctx.effect(
           () => ctx.locale.register(NS, { zh, en }),
@@ -857,7 +883,30 @@ window.__ModuleLoader__.load({
         const modelDirectories = ctx.get('modelDirectories');
         const sessions = ctx.get('sessions');
         const remote = ctx.get('remote');
+        const connection = ctx.get('connection');
         if (modelDirectories === undefined || sessions === undefined || remote === undefined) return;
+
+        /**
+         * Which models offer each faster tier comes from the provider's live
+         * model catalog, which its settings document does not carry, so it is
+         * read over the provider's own channel — the list its menu uses.
+         */
+        const refreshSpeedTiers = () => {
+          connection.rpc.call('/api', 'codex-subscription/preferences/status', {}).then(
+            (response) => {
+              if (response?.ok !== true) return;
+              const { fastModels, ultrafastModels } = response.value ?? {};
+              publishProviderPrefs({
+                ...getProviderPrefs(),
+                fastModels: Array.isArray(fastModels) ? Object.freeze([...fastModels]) : undefined,
+                ultrafastModels: Object.freeze(
+                  Array.isArray(ultrafastModels) ? [...ultrafastModels] : [],
+                ),
+              });
+            },
+            () => {},
+          );
+        };
 
         /** Re-read the provider's picker preferences into the shared store. */
         const refreshProviderPrefs = () => {
@@ -870,6 +919,7 @@ window.__ModuleLoader__.load({
               const disabled = entry?.value?.disabledModels;
               const speedMode = entry?.value?.speedMode;
               publishProviderPrefs({
+                ...getProviderPrefs(),
                 hidden: Object.freeze(
                   Array.isArray(disabled) ? disabled.filter((id) => typeof id === 'string') : [],
                 ),
@@ -877,6 +927,8 @@ window.__ModuleLoader__.load({
                 speedMode: typeof speedMode === 'string' ? speedMode : undefined,
                 writable: entry !== undefined && response.value?.writable === true,
               });
+              // Without the provider installed there is no channel to ask.
+              if (entry !== undefined) refreshSpeedTiers();
             },
             () => {},
           );
@@ -912,7 +964,7 @@ window.__ModuleLoader__.load({
 
         /**
          * Business face shared by both seats: this session's model directory,
-         * its selection verb, and the provider speed write.
+         * its selection verb, and the provider speed write and re-read.
          * @param sessionId - the seat's session.
          * @returns the injected props both components consume.
          */
@@ -934,6 +986,7 @@ window.__ModuleLoader__.load({
                   )
                 : Promise.resolve(false),
             setSpeedMode,
+            refreshPrefs: refreshProviderPrefs,
           };
         };
 

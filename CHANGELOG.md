@@ -6,6 +6,16 @@ All notable changes to this bundle are documented here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- The Speed submenu offered only Standard for models the bundle's mirrored
+  fast-mode list does not name, such as `gpt-6.1-sol`. The seat now reads the
+  `fastModels` and `ultrafastModels` lists `dsh-codex-subscription` builds from
+  its live model catalog (over its `preferences/status` channel, re-read when
+  the menu opens), so Fast and Ultrafast appear wherever the provider's own menu
+  shows them. The mirrored predicate remains only as the fallback until that
+  list arrives, and the Speed row names the tier actually in effect.
+
 ## [1.1.2] - 2026-10-17
 
 ### Added

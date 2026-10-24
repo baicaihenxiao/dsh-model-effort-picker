@@ -43,6 +43,7 @@ assert.deepEqual(plugin.inject, [
   'locale',
   'modelDirectories',
   'sessions',
+  'connection', // the provider's speed-tier lists ride its own RPC channel
   'remote',
   'remote.session', // read by modelDirectories.directoryFor under our inject on DSH 0.2.1+
   'remote.settings',
@@ -58,9 +59,26 @@ const services = {
     }),
   },
   sessions: { subagentAddress: () => undefined },
+  connection: {
+    rpc: {
+      call: (channel, endpoint) =>
+        Promise.resolve(
+          channel === '/api' && endpoint === 'codex-subscription/preferences/status'
+            ? { ok: true, value: { fastModels: ['gpt-6.1-sol'], ultrafastModels: ['gpt-6.1-sol'] } }
+            : { ok: false },
+        ),
+    },
+  },
   remote: {
     settings: {
-      describe: () => Promise.resolve({ ok: true, value: { writable: true, namespaces: [] } }),
+      describe: () =>
+        Promise.resolve({
+          ok: true,
+          value: {
+            writable: true,
+            namespaces: [{ ns: 'codex-subscription', value: { speedMode: 'fast' } }],
+          },
+        }),
       update: () => Promise.resolve({ ok: true }),
     },
     $on: () => () => {},
@@ -280,6 +298,55 @@ for (const reasoning of [{}, { efforts: null }, { efforts: 'low' }, { efforts: [
     `reasoning ${JSON.stringify(reasoning)}: no slider, no throw`,
   );
 }
+
+// Speed tiers follow the provider's catalog lists, not the mirrored predicate:
+// gpt-6.1-sol is missing from the predicate yet its catalog offers every tier.
+await new Promise((resolve) => setImmediate(resolve));
+const seat = registered.find(({ options }) => options.name === 'conversation.input.model').component;
+const useState = React.useState;
+React.useState = (initial) => [initial === false ? true : initial, () => {}]; // menu and speed rows open
+const menu = seat({
+  locked: false,
+  available: true,
+  directory: {
+    subscribe: () => () => {},
+    getSnapshot: () => ({
+      current: { provider: 'openai-codex', model: 'gpt-6.1-sol' },
+      groups: [
+        { id: 'openai-codex', name: 'ChatGPT subscription', models: [{ id: 'gpt-6.1-sol', name: 'GPT-6.1-Sol' }] },
+      ],
+      failures: [],
+      status: 'ready',
+      pending: null,
+      error: null,
+    }),
+  },
+  load: () => {},
+  select: () => Promise.resolve(true),
+  setSpeedMode: () => Promise.resolve(true),
+  refreshPrefs: () => {},
+  t: (key) => key,
+});
+React.useState = useState;
+const speedRows = [];
+let speedValue;
+(function walk(node) {
+  if (Array.isArray(node)) return node.forEach(walk);
+  if (node === null || typeof node !== 'object') return;
+  if (node.props?.key?.startsWith?.('speed:')) speedRows.push([node.props.key, node.props['aria-checked']]);
+  if (node.props?.className === 'mfl-cellValue') speedValue = node.children[0];
+  walk(node.children);
+})(menu);
+assert.deepEqual(
+  speedRows,
+  [
+    ['speed:standard', false],
+    ['speed:fast', true],
+    ['speed:ultrafast', false],
+  ],
+  'gpt-6.1-sol offers every catalog tier, with the stored one checked',
+);
+assert.equal(speedValue, 'speed.fast', 'the speed row names the tier in effect');
 
 // Host compatibility has to stay in step with what the bundle actually uses: DSH
 // blocks installation on `peerDependencies`, so a client package added to the
