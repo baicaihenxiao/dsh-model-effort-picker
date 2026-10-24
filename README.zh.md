@@ -44,7 +44,7 @@ install the DSH bundle at /absolute/path/to/dsh-model-effort-picker
 
 卸载：让 agent 移除 bundle `dsh-model-effort-picker`，或在 DSH 的 Plugins 页面停用它。
 
-- 插件 `1.1.2` 已在 DeepSeek Harness `0.2.0-rc.2` 和 `0.2.1-rc.2` 上验证。
+- 插件 `1.1.3` 已在 DeepSeek Harness `0.2.0-rc.2` 和 `0.2.1-rc.2` 上验证。
   `peerDependencies` 钉的就是这两个版本，因此 DSH 会拒绝在未经验证的宿主上安装或启用本 bundle
   —— 具体钉了哪些包见[依赖要求](#依赖要求)。
 
@@ -57,7 +57,7 @@ install the DSH bundle at /absolute/path/to/dsh-model-effort-picker
 |---|---|
 | `github:baicaihenxiao/dsh-model-effort-picker` | `dsh plugin --profile <profile> update dsh-model-effort-picker`，或先移除 bundle 再装一次 |
 | 本地克隆目录 | 在克隆目录里 `git pull` —— profile 链接的就是该目录 |
-| 指定 tag 或 commit | 安装你要的修订：`github:baicaihenxiao/dsh-model-effort-picker#v1.1.2` |
+| 指定 tag 或 commit | 安装你要的修订：`github:baicaihenxiao/dsh-model-effort-picker#v1.1.3` |
 
 需要知道的几点：
 
@@ -65,7 +65,7 @@ install the DSH bundle at /absolute/path/to/dsh-model-effort-picker
 - `plugin_manager` 的 `install_bundle` 会「装包 + 选中 bundle」两件事一起做；而 `dsh plugin`
   这条 CLI 通道只装包，用完之后需要重新选中 bundle。
 - 更新后刷新 Web 页面（或重启 `dsh web`）。
-- 用 tag 固定版本：`#v1.1.2`；分支名也可以。若用 commit SHA，必须是完整 40 位 ——
+- 用 tag 固定版本：`#v1.1.3`；分支名也可以。若用 commit SHA，必须是完整 40 位 ——
   pnpm 无法解析缩写 SHA。
 - 查看已装版本：
 

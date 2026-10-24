@@ -6,6 +6,8 @@ All notable changes to this bundle are documented here. The format follows
 
 ## [Unreleased]
 
+## [1.1.3] - 2026-10-25
+
 ### Fixed
 
 - The Speed submenu offered only Standard for models the bundle's mirrored
@@ -114,6 +116,7 @@ All notable changes to this bundle are documented here. The format follows
   registration id, inject contract, and both seat registrations.
 
 [Unreleased]: https://github.com/baicaihenxiao/dsh-model-effort-picker/commits/main
+[1.1.3]: https://github.com/baicaihenxiao/dsh-model-effort-picker/releases/tag/v1.1.3
 [1.1.2]: https://github.com/baicaihenxiao/dsh-model-effort-picker/releases/tag/v1.1.2
 [1.1.1]: https://github.com/baicaihenxiao/dsh-model-effort-picker/releases/tag/v1.1.1
 [1.1.0]: https://github.com/baicaihenxiao/dsh-model-effort-picker/releases/tag/v1.1.0
