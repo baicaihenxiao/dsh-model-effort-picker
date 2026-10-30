@@ -6,6 +6,8 @@ All notable changes to this bundle are documented here. The format follows
 
 ## [Unreleased]
 
+## [1.1.4] - 2026-10-30
+
 ### Fixed
 
 - A long level name ran into its neighbours under the effort slider, such as
@@ -124,6 +126,7 @@ All notable changes to this bundle are documented here. The format follows
   registration id, inject contract, and both seat registrations.
 
 [Unreleased]: https://github.com/baicaihenxiao/dsh-model-effort-picker/commits/main
+[1.1.4]: https://github.com/baicaihenxiao/dsh-model-effort-picker/releases/tag/v1.1.4
 [1.1.3]: https://github.com/baicaihenxiao/dsh-model-effort-picker/releases/tag/v1.1.3
 [1.1.2]: https://github.com/baicaihenxiao/dsh-model-effort-picker/releases/tag/v1.1.2
 [1.1.1]: https://github.com/baicaihenxiao/dsh-model-effort-picker/releases/tag/v1.1.1
