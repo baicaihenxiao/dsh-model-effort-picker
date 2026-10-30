@@ -227,7 +227,7 @@ for (const levels of CASES) {
   const ratios = ticks.map((tick) => {
     const { left, right, transform } = tick.props.style;
     assert.equal(right, undefined, `${levels.length} levels: no edge-anchored label`);
-    assert.equal(transform, 'translateX(-50%)', `${levels.length} levels: every label centred`);
+    assert.equal(transform, undefined, `${levels.length} levels: the style sheet centres every label`);
     const match = /^calc\(([\d.]+)px \+ \(100% - ([\d.]+)px\) \* ([\d.]+)\)$/.exec(left);
     assert.ok(match, `${levels.length} levels: unexpected stop offset ${left}`);
     assert.equal(Number(match[1]), THUMB / 2, 'a stop starts at the thumb radius');
@@ -257,7 +257,7 @@ assert.ok(
 );
 
 // However long a provider names a level, a label is cut to the gap between two
-// stops so neighbours cannot overlap, and the tick's title keeps the full name.
+// stops so neighbours cannot overlap, and hovering it opens the full name.
 assert.match(
   css,
   /\.mfl-effortTickText\{[^}]*max-width:var\(--mfl-gap\);overflow:hidden;text-overflow:ellipsis\}/,
@@ -276,11 +276,41 @@ const LONG = 'Ultra (DSH parallel · xhigh)';
 const longTick = renderSlider([], {
   reasoning: { defaultEffort: 'low', efforts: [{ id: 'low', name: 'Low' }, { id: 'ultra', name: LONG }] },
 }).ticks[1];
-assert.equal(longTick.props.title, LONG, 'the tick title keeps the full level name');
+assert.equal(longTick.props.title, undefined, 'no native tooltip, which waits for a still pointer');
 assert.deepEqual(
   longTick.children.map((child) => [child.props.className, child.children[0]]),
   [['mfl-effortTickText', LONG]],
   'the label sits in its own capped box',
+);
+assert.match(css, /\.mfl-effortTick\{[^}]*transform:translateX\(-50%\)/, 'a label is centred on its stop');
+assert.match(
+  css,
+  /\.mfl-effortTick:hover \.mfl-effortTickText\{max-width:none;/,
+  'hovering a cut label opens it in place, at once',
+);
+// An end label opens inward; uncut, its box is no wider than the gap, so both
+// rules resolve to the same -50% at rest.
+assert.match(
+  css,
+  /\.mfl-effortTick:first-child\{transform:translateX\(max\(-50%, var\(--mfl-gap\) \/ -2\)\)\}/,
+  'the first label opens rightwards',
+);
+assert.match(
+  css,
+  /\.mfl-effortTick:last-child\{transform:translateX\(min\(-50%, var\(--mfl-gap\) \/ 2 - 100%\)\)\}/,
+  'the last label opens leftwards',
+);
+// The box moves, its mark must not: each end mark is moved back by the same
+// amount, which is zero at rest.
+assert.match(
+  css,
+  /\.mfl-effortTick:first-child::before\{position:relative;left:min\(0px, var\(--mfl-gap\) \/ 2 - 50%\)\}/,
+  'the first mark stays on its stop',
+);
+assert.match(
+  css,
+  /\.mfl-effortTick:last-child::before\{position:relative;left:max\(0px, 50% - var\(--mfl-gap\) \/ 2\)\}/,
+  'the last mark stays on its stop',
 );
 
 // The painted fill has to trail the thumb, so it runs from the first stop to the

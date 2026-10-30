@@ -6,6 +6,14 @@ All notable changes to this bundle are documented here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- A cut tick label such as `Medi…` showed its full name only through the
+  browser's title tooltip, which waits for a still pointer, so hovering straight
+  onto it usually showed nothing. Hovering a cut label now opens its full name
+  in place at once, over its neighbours; an end label opens inward, over the
+  track rather than the controls beside it.
+
 ## [1.1.4] - 2026-10-30
 
 ### Fixed

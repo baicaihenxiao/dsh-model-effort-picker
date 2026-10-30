@@ -111,15 +111,30 @@ window.__ModuleLoader__.load({
       `.mfl-effortRange::-moz-range-progress{height:${TRACK_THICKNESS}px;border-radius:2px;background:${FILL_COLOR}}`,
       `.mfl-effortRange::-moz-range-thumb{width:${THUMB_SIZE}px;height:${THUMB_SIZE}px;border:0;border-radius:50%;background:${FILL_COLOR}}`,
       '.mfl-effortTicks{position:absolute;left:var(--mfl-pad,14px);right:var(--mfl-pad,14px);bottom:0;height:14px}',
-      '.mfl-effortTick{position:absolute;bottom:0;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10px;line-height:10px;font-weight:500;white-space:nowrap;color:var(--dsw-alias-label-tertiary)}',
+      '.mfl-effortTick{position:absolute;bottom:0;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10px;line-height:10px;font-weight:500;white-space:nowrap;color:var(--dsw-alias-label-tertiary)}',
       '.mfl-effortTick::before{content:"";display:block;width:1px;height:2px;background:currentColor}',
       // A label wider than the gap between two stops would run into its
-      // neighbour, so it is cut to that gap; the tick's title keeps the full name.
+      // neighbour, so it is cut to that gap; hovering it shows the rest.
       // The cap sits on its own box: a flex column's bare text does not take it.
       // The 10px line box is shorter than the glyphs, so the clip is padded 2px
       // downwards (and the margin takes it back) to keep descenders such as the
       // g in "High" whole without moving the row.
       '.mfl-effortTickText{display:block;padding-bottom:2px;margin-bottom:-2px;max-width:var(--mfl-gap);overflow:hidden;text-overflow:ellipsis}',
+      // A cut name opens in place on hover, over its neighbours and at once: a
+      // native title tooltip waits for a still pointer first, which a 39px label
+      // rarely gets. The fill repeats the hovered slider's own background, so an
+      // uncut label shows no change, and its 4px sides give back their margin.
+      '.mfl-effortTick:hover{z-index:1}',
+      '.mfl-effortTick:hover .mfl-effortTickText{max-width:none;padding-inline:4px;margin-inline:-4px;background:linear-gradient(var(--dsw-alias-interactive-bg-hover),var(--dsw-alias-interactive-bg-hover)),var(--dsw-specific-input-major,var(--dsw-alias-bg-layer-1))}',
+      // An end label opens inward, over the track rather than the controls
+      // beside it. Its box is never wider than the gap until then, so at rest
+      // both resolve to the same centring as every other label. The mark moves
+      // back by what the box moved (50% of the box less half the gap), so it
+      // stays on its stop.
+      '.mfl-effortTick:first-child{transform:translateX(max(-50%, var(--mfl-gap) / -2))}',
+      '.mfl-effortTick:last-child{transform:translateX(min(-50%, var(--mfl-gap) / 2 - 100%))}',
+      '.mfl-effortTick:first-child::before{position:relative;left:min(0px, var(--mfl-gap) / 2 - 50%)}',
+      '.mfl-effortTick:last-child::before{position:relative;left:max(0px, 50% - var(--mfl-gap) / 2)}',
       '.mfl-searchRow{flex-shrink:0;margin:2px 0 3px}',
       '.mfl-search{box-sizing:border-box;width:100%;height:28px;padding:0 8px;border:1px solid transparent;border-radius:var(--dsw-radius-md,8px);background:transparent;color:inherit;font-size:12px;outline:none}',
       '.mfl-search::placeholder{color:var(--dsw-alias-label-caption,var(--dsw-alias-label-tertiary))}',
@@ -850,11 +865,9 @@ window.__ModuleLoader__.load({
                 {
                   key: level.id ?? 'default',
                   className: 'mfl-effortTick',
-                  title: level.name,
                   style: {
                     color: effortTint(index, levels.length),
                     left: stopOffset(index, levels.length),
-                    transform: 'translateX(-50%)',
                   },
                 },
                 h('span', { className: 'mfl-effortTickText' }, level.tick ?? level.name),
