@@ -50,7 +50,7 @@ install the DSH bundle at /absolute/path/to/dsh-model-effort-picker
 To remove it again, ask the agent to remove the bundle
 `dsh-model-effort-picker`, or disable it on DSH's Plugins page.
 
-- Plugin `1.1.5` is tested with DeepSeek Harness `0.2.0-rc.2`, `0.2.1-rc.2` and
+- Plugin `1.1.6` is tested with DeepSeek Harness `0.2.0-rc.2`, `0.2.1-rc.2` and
   `0.2.1-rc.5`.
   Those versions are what `peerDependencies` pins, so DSH refuses to install or
   activate this bundle on a host it has not been verified against — see
@@ -66,7 +66,7 @@ itself**. How you update depends on how you installed it:
 |---|---|
 | `github:baicaihenxiao/dsh-model-effort-picker` | `dsh plugin --profile <profile> update dsh-model-effort-picker`, or remove the bundle and install it again |
 | a local checkout | `git pull` in the checkout — the profile links the directory |
-| a tag or commit | install the revision you want: `github:baicaihenxiao/dsh-model-effort-picker#v1.1.5` |
+| a tag or commit | install the revision you want: `github:baicaihenxiao/dsh-model-effort-picker#v1.1.6` |
 
 Points worth knowing:
 
@@ -76,7 +76,7 @@ Points worth knowing:
   bundle. The `dsh plugin` CLI path only installs the package, so re-select the
   bundle afterwards if you use it.
 - Reload the Web page (or restart `dsh web`) after updating.
-- Pin a release by tag — `#v1.1.5`. A branch name works too. A commit SHA must
+- Pin a release by tag — `#v1.1.6`. A branch name works too. A commit SHA must
   be the full 40 characters: pnpm cannot resolve an abbreviated one.
 - To see what you have installed, read the version in your profile:
 
