@@ -139,7 +139,7 @@ const slider = registered.find(
  * Render the slider for one model's level list.
  * @param levels - level ids, lowest first.
  * @param options - stored selection and adapter default effort.
- * @returns the tick nodes in level order, the range input's painted fill, and the block width.
+ * @returns the tick nodes in level order, the range input's painted fill, the block width, and the label cap.
  */
 function renderSlider(levels, options = {}) {
   const { reasoningEffort, defaultEffort, reasoning } = options;
@@ -181,15 +181,19 @@ function renderSlider(levels, options = {}) {
   const ticks = [];
   let fill;
   let width;
+  let gap;
   (function walk(node) {
     if (Array.isArray(node)) return node.forEach(walk);
     if (node === null || typeof node !== 'object') return;
     if (node.props?.className === 'mfl-effortTick') ticks.push(node);
-    if (node.props?.className === 'mfl-effortSlider') width = node.props.style.width;
+    if (node.props?.className === 'mfl-effortSlider') {
+      width = node.props.style.width;
+      gap = node.props.style['--mfl-gap'];
+    }
     if (node.props?.type === 'range') fill = node.props.style['--mfl-fill'];
     walk(node.children);
   })(tree);
-  return { ticks, fill, width };
+  return { ticks, fill, width, gap };
 }
 
 // Four levels land on the scheme's tokens; more levels must still stay distinct,
@@ -250,6 +254,33 @@ assert.ok(lengths[0] >= 150, `four stops keep at least the base length: ${length
 assert.ok(
   lengths[0] < lengths[1] && lengths[1] <= lengths[2],
   `a longer level list widens the track: ${lengths.join('px, ')}px`,
+);
+
+// However long a provider names a level, a label is cut to the gap between two
+// stops so neighbours cannot overlap, and the tick's title keeps the full name.
+assert.match(
+  css,
+  /\.mfl-effortTickText\{[^}]*max-width:var\(--mfl-gap\);overflow:hidden;text-overflow:ellipsis\}/,
+  'a tick label is capped at the stop gap with an ellipsis',
+);
+CASES.forEach((levels, index) => {
+  const { ticks, gap } = renderSlider(levels);
+  const match = /^([\d.]+)px$/.exec(gap);
+  assert.ok(match, `unexpected label cap ${gap}`);
+  assert.ok(
+    Math.abs(Number(match[1]) * (ticks.length - 1) + THUMB - lengths[index]) < 1e-6,
+    `${levels.length} levels: the label cap ${gap} is the distance between two stops`,
+  );
+});
+const LONG = 'Ultra (DSH parallel · xhigh)';
+const longTick = renderSlider([], {
+  reasoning: { defaultEffort: 'low', efforts: [{ id: 'low', name: 'Low' }, { id: 'ultra', name: LONG }] },
+}).ticks[1];
+assert.equal(longTick.props.title, LONG, 'the tick title keeps the full level name');
+assert.deepEqual(
+  longTick.children.map((child) => [child.props.className, child.children[0]]),
+  [['mfl-effortTickText', LONG]],
+  'the label sits in its own capped box',
 );
 
 // The painted fill has to trail the thumb, so it runs from the first stop to the

@@ -6,6 +6,14 @@ All notable changes to this bundle are documented here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- A long level name ran into its neighbours under the effort slider, such as
+  `dsh-codex-subscription`'s `Ultra (DSH parallel · xhigh)` over `Max`. Each
+  tick label is now cut with an ellipsis to the gap between two stops, and
+  hovering it shows the full name. From six stops on that gap is under 39px, so
+  `Medium` is cut as well.
+
 ## [1.1.3] - 2026-10-25
 
 ### Fixed

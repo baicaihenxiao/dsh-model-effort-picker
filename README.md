@@ -135,7 +135,10 @@ Points worth knowing:
   as a model had more than four levels. The track also widens as levels are
   added (150px for four stops, then +26px per stop, capped at 230px) and the end
   labels get 14px of reserved room, so the names keep their distance instead of
-  crowding.
+  crowding. A name wider than the gap between two stops is cut to that gap with
+  an ellipsis (hover it for the full name), so a long one such as
+  `Ultra (DSH parallel · xhigh)` cannot run into its neighbours; from six stops
+  on, where the gap drops under 39px, that cuts a name as short as `Medium` too.
 - **Thin bar.** The bar is painted by the bundle (3px track, 9px thumb) rather
   than left to the native range control, whose track and thumb keep their own
   size — a shorter box would only clip them. The filled part ends at the thumb's

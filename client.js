@@ -113,6 +113,13 @@ window.__ModuleLoader__.load({
       '.mfl-effortTicks{position:absolute;left:var(--mfl-pad,14px);right:var(--mfl-pad,14px);bottom:0;height:14px}',
       '.mfl-effortTick{position:absolute;bottom:0;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10px;line-height:10px;font-weight:500;white-space:nowrap;color:var(--dsw-alias-label-tertiary)}',
       '.mfl-effortTick::before{content:"";display:block;width:1px;height:2px;background:currentColor}',
+      // A label wider than the gap between two stops would run into its
+      // neighbour, so it is cut to that gap; the tick's title keeps the full name.
+      // The cap sits on its own box: a flex column's bare text does not take it.
+      // The 10px line box is shorter than the glyphs, so the clip is padded 2px
+      // downwards (and the margin takes it back) to keep descenders such as the
+      // g in "High" whole without moving the row.
+      '.mfl-effortTickText{display:block;padding-bottom:2px;margin-bottom:-2px;max-width:var(--mfl-gap);overflow:hidden;text-overflow:ellipsis}',
       '.mfl-searchRow{flex-shrink:0;margin:2px 0 3px}',
       '.mfl-search{box-sizing:border-box;width:100%;height:28px;padding:0 8px;border:1px solid transparent;border-radius:var(--dsw-radius-md,8px);background:transparent;color:inherit;font-size:12px;outline:none}',
       '.mfl-search::placeholder{color:var(--dsw-alias-label-caption,var(--dsw-alias-label-tertiary))}',
@@ -785,6 +792,8 @@ window.__ModuleLoader__.load({
       );
       const shown = drag?.index ?? stored;
 
+      const length = trackLength(levels.length);
+
       const commit = () => {
         if (drag === null || current === null || current === undefined) return;
         const level = levels[drag.index];
@@ -807,7 +816,8 @@ window.__ModuleLoader__.load({
             // their own so centring them does not push them outside the box.
             style: {
               '--mfl-pad': `${END_LABEL_ROOM}px`,
-              width: `calc(${trackLength(levels.length)}px + 2 * var(--mfl-pad))`,
+              '--mfl-gap': `${(length - THUMB_SIZE) / (levels.length - 1)}px`,
+              width: `calc(${length}px + 2 * var(--mfl-pad))`,
             },
           },
           h('input', {
@@ -840,13 +850,14 @@ window.__ModuleLoader__.load({
                 {
                   key: level.id ?? 'default',
                   className: 'mfl-effortTick',
+                  title: level.name,
                   style: {
                     color: effortTint(index, levels.length),
                     left: stopOffset(index, levels.length),
                     transform: 'translateX(-50%)',
                   },
                 },
-                level.tick ?? level.name,
+                h('span', { className: 'mfl-effortTickText' }, level.tick ?? level.name),
               ),
             ),
           ),
