@@ -50,7 +50,8 @@ install the DSH bundle at /absolute/path/to/dsh-model-effort-picker
 To remove it again, ask the agent to remove the bundle
 `dsh-model-effort-picker`, or disable it on DSH's Plugins page.
 
-- Plugin `1.1.5` is tested with DeepSeek Harness `0.2.0-rc.2` and `0.2.1-rc.2`.
+- Plugin `1.1.5` is tested with DeepSeek Harness `0.2.0-rc.2`, `0.2.1-rc.2` and
+  `0.2.1-rc.5`.
   Those versions are what `peerDependencies` pins, so DSH refuses to install or
   activate this bundle on a host it has not been verified against — see
   [Requirements](#requirements) for the exact packages.
@@ -93,7 +94,7 @@ Points worth knowing:
 - A DSH version this bundle was verified against. `peerDependencies` pins the
   three host packages it uses — `@deepseek-ai/dsh-client-locale`,
   `@deepseek-ai/dsh-client-ui-conversation` and
-  `@deepseek-ai/dsh-client-ui-model-selection` — to `0.2.0-rc.2 || 0.2.1-rc.2`, and `engines`
+  `@deepseek-ai/dsh-client-ui-model-selection` — to `0.2.0-rc.2 || 0.2.1-rc.2 || 0.2.1-rc.5`, and `engines`
   matches the host's Node range (`^22.19.0 || >=24.0.0`). DSH's plugin manager
   evaluates every `@deepseek-ai/dsh*` peer range **against the DSH runtime
   version** and rejects installation or activation when one does not match, so an

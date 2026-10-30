@@ -6,6 +6,12 @@ All notable changes to this bundle are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- DeepSeek Harness `0.2.1-rc.5` support beside `0.2.0-rc.2` and `0.2.1-rc.2`:
+  the three host peers accept `0.2.0-rc.2 || 0.2.1-rc.2 || 0.2.1-rc.5`. The
+  model seat and the effort slider were seen in a browser on `0.2.1-rc.5`.
+
 ## [1.1.5] - 2026-10-30
 
 ### Fixed
