@@ -6,6 +6,8 @@ All notable changes to this bundle are documented here. The format follows
 
 ## [Unreleased]
 
+## [1.1.5] - 2026-10-30
+
 ### Fixed
 
 - A cut tick label such as `Medi…` showed its full name only through the
@@ -134,6 +136,7 @@ All notable changes to this bundle are documented here. The format follows
   registration id, inject contract, and both seat registrations.
 
 [Unreleased]: https://github.com/baicaihenxiao/dsh-model-effort-picker/commits/main
+[1.1.5]: https://github.com/baicaihenxiao/dsh-model-effort-picker/releases/tag/v1.1.5
 [1.1.4]: https://github.com/baicaihenxiao/dsh-model-effort-picker/releases/tag/v1.1.4
 [1.1.3]: https://github.com/baicaihenxiao/dsh-model-effort-picker/releases/tag/v1.1.3
 [1.1.2]: https://github.com/baicaihenxiao/dsh-model-effort-picker/releases/tag/v1.1.2
