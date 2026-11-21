@@ -6,6 +6,15 @@ All notable changes to this bundle are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- DeepSeek Harness `0.2.2-rc.1` to `0.2.2-rc.5` are accepted beside
+  `0.2.0-rc.2`, `0.2.1-rc.2` and `0.2.1-rc.5`: the three host peers list all
+  eight versions. No code changed. The host packages behind the seams the
+  bundle uses are the same from `0.2.2-rc.2` to `0.2.2-rc.5`, each seam was
+  read in the `0.2.2-rc.5` sources, and `node check.mjs` passes. No browser
+  check on `0.2.2` is recorded.
+
 ## [1.1.6] - 2026-10-30
 
 ### Added

@@ -51,7 +51,9 @@ To remove it again, ask the agent to remove the bundle
 `dsh-model-effort-picker`, or disable it on DSH's Plugins page.
 
 - Plugin `1.1.6` is tested with DeepSeek Harness `0.2.0-rc.2`, `0.2.1-rc.2` and
-  `0.2.1-rc.5`.
+  `0.2.1-rc.5`, and accepts `0.2.2-rc.1` to `0.2.2-rc.5`: on those the host
+  seams it uses were compared with the host's sources and `node check.mjs`
+  passes, with no browser check recorded.
   Those versions are what `peerDependencies` pins, so DSH refuses to install or
   activate this bundle on a host it has not been verified against — see
   [Requirements](#requirements) for the exact packages.
@@ -94,7 +96,7 @@ Points worth knowing:
 - A DSH version this bundle was verified against. `peerDependencies` pins the
   three host packages it uses — `@deepseek-ai/dsh-client-locale`,
   `@deepseek-ai/dsh-client-ui-conversation` and
-  `@deepseek-ai/dsh-client-ui-model-selection` — to `0.2.0-rc.2 || 0.2.1-rc.2 || 0.2.1-rc.5`, and `engines`
+  `@deepseek-ai/dsh-client-ui-model-selection` — to `0.2.0-rc.2 || 0.2.1-rc.2 || 0.2.1-rc.5 || 0.2.2-rc.1 || 0.2.2-rc.2 || 0.2.2-rc.3 || 0.2.2-rc.4 || 0.2.2-rc.5`, and `engines`
   matches the host's Node range (`^22.19.0 || >=24.0.0`). DSH's plugin manager
   evaluates every `@deepseek-ai/dsh*` peer range **against the DSH runtime
   version** and rejects installation or activation when one does not match, so an
