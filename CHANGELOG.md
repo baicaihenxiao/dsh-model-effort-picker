@@ -6,6 +6,12 @@ All notable changes to this bundle are documented here. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- The model menu grows to 480px before its list scrolls, up from 360px, so
+  more models show at once. On a short window it still stops 96px short of the
+  window height.
+
 ## [1.1.7] - 2026-11-21
 
 ### Added
