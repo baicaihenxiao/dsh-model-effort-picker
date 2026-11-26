@@ -6,6 +6,8 @@ All notable changes to this bundle are documented here. The format follows
 
 ## [Unreleased]
 
+## [1.1.8] - 2026-11-26
+
 ### Changed
 
 - The model menu grows to 480px before its list scrolls, up from 360px, so
@@ -161,6 +163,7 @@ All notable changes to this bundle are documented here. The format follows
   registration id, inject contract, and both seat registrations.
 
 [Unreleased]: https://github.com/baicaihenxiao/dsh-model-effort-picker/commits/main
+[1.1.8]: https://github.com/baicaihenxiao/dsh-model-effort-picker/releases/tag/v1.1.8
 [1.1.7]: https://github.com/baicaihenxiao/dsh-model-effort-picker/releases/tag/v1.1.7
 [1.1.6]: https://github.com/baicaihenxiao/dsh-model-effort-picker/releases/tag/v1.1.6
 [1.1.5]: https://github.com/baicaihenxiao/dsh-model-effort-picker/releases/tag/v1.1.5
